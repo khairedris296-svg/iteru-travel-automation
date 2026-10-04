@@ -1,0 +1,937 @@
+{
+  "name": "We reach agent Hotels sites",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nconst formattedHotels = items.map(item => {\n    const row = item.json;\n    \n    let lat = null;\n    let lng = null;\n    const coordStr = row['coordinations'] || row['Coordinates'] || \"\";\n    \n    if (coordStr) {\n        // استخراج الأرقام فقط (بما في ذلك الفواصل العشرية والسالب) وتجاهل الحروف\n        const matches = coordStr.match(/-?\\d+(\\.\\d+)?/g);\n        if (matches && matches.length >= 2) {\n            lat = parseFloat(matches[0]);\n            lng = parseFloat(matches[1]);\n        }\n    }\n\n    // استخراج رابط الحجز ومعالجته بذكاء\n    let rawUrl = (row['Distance'] || row['distance'] || \"\").trim();\n    let formattedUrl = \"#\";\n\n    if (rawUrl) {\n        if (rawUrl.startsWith(\"http://\") || rawUrl.startsWith(\"https://\")) {\n            formattedUrl = rawUrl;\n        } else if (rawUrl.startsWith(\"/\")) {\n            formattedUrl = \"https://www.google.com\" + rawUrl;\n        } else if (rawUrl.includes(\" \") || !rawUrl.includes(\".\")) {\n            // إذا كان النص يحتوي على مسافات (مثل 6.32 km)، فهو ليس رابطاً!\n            // نصنع رابط بحث في جوجل كبديل ذكي\n            const searchQ = encodeURIComponent((row['hotel name'] || \"\") + \" hotel booking\");\n            formattedUrl = \"https://www.google.com/search?q=\" + searchQ;\n        } else {\n            formattedUrl = \"https://\" + rawUrl;\n        }\n    }\n    \n    return {\n        json: {\n            row_number: row['row_number'] || row['rowNumber'] || \"\", // 👈 هذا هو السطر المضاف\n            timestamp: row['date'] || \"\",\n            website: row['website'] || \"Unknown\", \n            'hotel name': row['hotel name'] || \"Unknown Hotel\",\n            price: row['price'] || \"0\",\n            'stars rate': row['stars rate'] || \"3\",\n            \n            // إرسال الرابط الأصلي والرابط المعالج للداشبورد\n            'Distance': rawUrl,\n            'booking_url': formattedUrl,\n            \n            // تمرير الإحداثيات النظيفة للداشبورد\n            lat: isNaN(lat) ? null : lat,\n            lng: isNaN(lng) ? null : lng,\n            coordinations: coordStr,\n            \n            // الخانات المتبقية\n            'Distance22': row['POI Distance22'] || row['Distance22'] || \"\",\n            'Distance to city center': row['Distance to city center'] || \"\",\n            'More details': row['More details'] || \"\",\n            'Location': row['Location'] || row['location'] || \"\",\n            'Img link': row['Img link'] || row['img link'] || \"\"\n        }\n    };\n});\n\nreturn formattedHotels;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1472,
+        -192
+      ],
+      "id": "53d0dbec-ffd6-4d1d-8c23-1f149c959aa4",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "path": ",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -624,
+        -368
+      ],
+      "id": "c4feeefd-808e-468d-9e69-b67ff1392ecd",
+      "name": "Webhook",
+      "webhookId": ""
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        2016,
+        -208
+      ],
+      "id": "df278c14-33f0-4723-80ba-ab4c31834542",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://places.googleapis.com/v1/places:searchText",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Goog-Api-Key",
+              "value": "As"
+            },
+            {
+              "name": "X-Goog-FieldMask",
+              "value": "places.displayName,places.location,places.photos,places.rating,places.userRatingCount,places.priceLevel,places.formattedAddress,places.addressComponents"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"textQuery\": \"Hotel {{ $json['hotel name'] }}\",\n  \"includedType\": \"lodging\",\n  \"pageSize\": 1\n}",
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 8
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -176,
+        -368
+      ],
+      "id": "7b9e044b-d953-4a7c-84b1-2d46f18bffd0",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Bkqgnqs",
+          "mode": "list",
+          "cachedResultName": "Scrab hotels data ",
+          "cachedResultUrl": "https://docs.google.com/spreaesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.cd=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -416,
+        -368
+      ],
+      "id": "e8ff4086-4709-46a3-849c-17b89fe84619",
+      "name": "Get row(s) in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "egNomy9EvgCP7ZBb",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://places.googleapis.com/v1/{{ $json.places[0]?.photos?.[0]?.name }}/media",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "key",
+              "value": "As"
+            },
+            {
+              "name": "maxWidthPx",
+              "value": "400"
+            },
+            {
+              "name": "maxHeightPx",
+              "value": "400"
+            },
+            {
+              "name": "skipHttpRedirect",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        48,
+        -368
+      ],
+      "id": "a5960c28-1865-4f5c-90eb-a6c657150aa5",
+      "name": "HTTP Request3",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": ,
+          "mode": "list",
+          "cachedResultName": "Scrab hotels data cheapotel",
+          "cachedResultUrl": "https://dok"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Img link": "={{ $('HTTP Request3').item.json.photoUri }}",
+            "Location": "={{ $('HTTP Request1').item.json.places[0].photos[0].googleMapsUri }}",
+            "row_number": "={{ $('Get row(s) in sheet1').item.json.row_number }}",
+            "More details": "=Address: {{ $('HTTP Request1').item.json.places[0].formattedAddress || \"N/A\" }} | Google Maps User Rating: {{ $('HTTP Request1').item.json.places[0].rating || \"N/A\" }}/5 (based on {{ $('HTTP Request1').item.json.places[0].userRatingCount || \"0\" }} reviews",
+            "Distance to city center": "={{ $json.distanceToCityCenter }}",
+            "coordinations": "=lat {{ $('HTTP Request1').item.json.places[0].location.latitude }} |  lon {{ $('HTTP Request1').item.json.places[0].location.longitude }}",
+            "POI Distance22": "={{ $json.distanceToPOI }}",
+            "date": "={{ $('Get row(s) in sheet1').item.json.date }}",
+            "website": "={{ $('Get row(s) in sheet1').item.json.website }}",
+            "hotel name": "={{ $('Get row(s) in sheet1').item.json['hotel name'] }}",
+            "price": "={{ $('Get row(s) in sheet1').item.json.price }}",
+            "stars rate": "={{ $('Get row(s) in sheet1').item.json['stars rate'] }}",
+            "Distance": "={{ $('Get row(s) in sheet1').item.json.Distance }}",
+            "destination": "={{ $('Get row(s) in sheet1').item.json.destination }}",
+            "POI": "={{ $('Get row(s) in sheet1').item.json.POI }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "website",
+              "displayName": "website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "hotel name",
+              "displayName": "hotel name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "price",
+              "displayName": "price",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "stars rate",
+              "displayName": "stars rate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Distance",
+              "displayName": "Distance",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Img link",
+              "displayName": "Img link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "POI Distance22",
+              "displayName": "POI Distance22",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "More details",
+              "displayName": "More details",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Distance to city center",
+              "displayName": "Distance to city center",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "coordinations",
+              "displayName": "coordinations",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "destination",
+              "displayName": "destination",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "POI",
+              "displayName": "POI",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1056,
+        -368
+      ],
+      "id": "74425bf4-bfa9-4899-b757-3e9735d457e1",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "egNomy9EvgCP7ZBb",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// 1. استدعاء الأسماء من عقدة الاستخراج\nconst cityName = $('Extract city and hotel coordinates').item.json.cityName || \"the city\";\nconst poiName = $('Extract city and hotel coordinates').item.json.POI || \"the POI\";\n\n// 2. استدعاء إحداثيات الفندق\nconst hotelLat = $('Extract city and hotel coordinates').item.json.hotelLat;\nconst hotelLng = $('Extract city and hotel coordinates').item.json.hotelLng;\n\n// 3. استدعاء إحداثيات المدينة (من عقدة Request city coords)\nconst cityData = $('Request city coords').item.json;\nconst cityLat = (cityData && cityData.places && cityData.places.length > 0) ? cityData.places[0].location.latitude : null;\nconst cityLng = (cityData && cityData.places && cityData.places.length > 0) ? cityData.places[0].location.longitude : null;\n\n// 4. استدعاء إحداثيات الـ POI (من العقدة الحالية المدخلة Request POI coords)\nconst poiData = $json;\nconst poiLat = (poiData && poiData.places && poiData.places.length > 0) ? poiData.places[0].location.latitude : null;\nconst poiLng = (poiData && poiData.places && poiData.places.length > 0) ? poiData.places[0].location.longitude : null;\n\n// 5. دالة رياضية لحساب المسافة بالكيلومتر\nfunction calculateDistance(lat1, lon1, lat2, lon2) {\n    if (!lat1 || !lon1 || !lat2 || !lon2) return null;\n    const R = 6371; // نصف قطر الأرض بالكيلومتر\n    const dLat = (lat2 - lat1) * (Math.PI / 180);\n    const dLon = (lon2 - lon1) * (Math.PI / 180);\n    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +\n              Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *\n              Math.sin(dLon / 2) * Math.sin(dLon / 2);\n    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));\n    return R * c;\n}\n\n// حد أقصى صارم للمسافة المنطقية 10 كم\nconst MAX_REASONABLE_DIST = 10; \n\n// 6. تنفيذ الحساب\nconst distToCity = calculateDistance(hotelLat, hotelLng, cityLat, cityLng);\nconst distToPOI = calculateDistance(hotelLat, hotelLng, poiLat, poiLng);\n\n// 7. تنسيق النصوص النهائية\nlet distanceCityStr;\nlet distancePoiStr;\n\n// التحقق من حالة البحث المخصص باسم الفندق (عدم توفر اسم منطقة/POI)\nconst isSpecificHotelSearch = (!poiName || String(poiName).trim().toUpperCase() === \"N/A\" || String(poiName).trim() === \"\");\n\nif (isSpecificHotelSearch) {\n    // أ- خانة البعد عن الـ POI تصبح دائماً الجملة التالية\n    distancePoiStr = \"Specific Hotel Search\";\n\n    // ب- خانة البعد عن المدينة يتم فيها تطبيق قاعدة الـ 10 كم\n    if (distToCity !== null) {\n        if (distToCity <= MAX_REASONABLE_DIST) {\n            distanceCityStr = distToCity.toFixed(2) + \" km to \" + cityName + \" city center\";\n        } else {\n            // قمنا بتغيير km إلى Kilometers لكي لا يقوم الداشبورد بقص الجملة\ndistanceCityStr = \"+10 Kilometers to \" + cityName + \" city center\";\n        }\n    } else {\n        distanceCityStr = \"N/A\";\n    }\n\n} else {\n    // ج- حالة البحث الطبيعي (يوجد اسم منطقة فعلي)\n    distanceCityStr = (distToCity !== null && distToCity <= MAX_REASONABLE_DIST) \n        ? distToCity.toFixed(2) + \" km to \" + cityName + \" city center\" \n        : \"N/A\";\n\n    distancePoiStr = (distToPOI !== null && distToPOI <= MAX_REASONABLE_DIST) \n        ? distToPOI.toFixed(2) + \" km to \" + poiName \n        : \"N/A\";\n}\n\n// 8. تحديد الفنادق الخاطئة لإرسال أمر الحذف\nlet shouldDelete = false;\n\n// إذا كان هناك اسم منطقة (ليس بحثاً مخصصاً)، وإحدى المسافتين تحولت إلى N/A (تجاوزت 10 كم)\nif (!isSpecificHotelSearch && (distanceCityStr === \"N/A\" || distancePoiStr === \"N/A\")) {\n    shouldDelete = true;\n}\n\n// إخراج النتائج للداشبورد مع مؤشر الحذف\nreturn {\n    distanceToCityCenter: distanceCityStr,\n    distanceToPOI: distancePoiStr,\n    shouldDelete: shouldDelete\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        864,
+        -368
+      ],
+      "id": "71341666-d350-44bf-8f45-088b2eb04046",
+      "name": "حساب المسافة لمركز المدينة"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const requestData = $('HTTP Request1').item.json;\nconst place = (requestData && requestData.places && requestData.places.length > 0) ? requestData.places[0] : null;\n\n// سحب اسم المدينة و الـ POI من عقدة الشيت\nconst cityName = $('Get row(s) in sheet1').item.json[\"destination\"]; \nconst poiName = $('Get row(s) in sheet1').item.json[\"POI\"]; \n\nreturn {\n    cityName: cityName || \"N/A\",\n    POI: poiName || \"N/A\",\n    hotelLat: place && place.location ? place.location.latitude : null,\n    hotelLng: place && place.location ? place.location.longitude : null\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        272,
+        -368
+      ],
+      "id": "dae65f2a-b568-46ce-8ecb-e7753bba969c",
+      "name": "Extract city and hotel coordinates"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://places.googleapis.com/v1/places:searchText",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Goog-Api-Key",
+              "value": "s"
+            },
+            {
+              "name": "X-Goog-FieldMask",
+              "value": "places.location"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"textQuery\": \"{{ $json.cityName }}\",\n  \"pageSize\": 1\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        464,
+        -368
+      ],
+      "id": "761508af-21d5-41aa-9c4b-4cd706dff4e7",
+      "name": "Request city coords"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://places.googleapis.com/v1/places:searchText",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Goog-Api-Key",
+              "value": "As"
+            },
+            {
+              "name": "X-Goog-FieldMask",
+              "value": "places.location"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"textQuery\": \"{{ $('Extract city and hotel coordinates').item.json.POI }} {{ $('Extract city and hotel coordinates').item.json.cityName }}\",\n  \"pageSize\": 1\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        672,
+        -368
+      ],
+      "id": "34a9bb51-e0c9-4fec-bd4e-32b0da8cd45b",
+      "name": "Request POI coords"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -928,
+        224
+      ],
+      "id": "b54e1b7b-e6cb-4e5e-b356-ded66ddb3c22",
+      "name": "Webhook1",
+      "webhookId": "
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.action }}",
+                    "rightValue": "clear_all",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "5eb1acf1-26a7-4fe6-90da-12d9d524bd52"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "c49743fd-bd39-4484-8bb9-ee9ae8143963",
+                    "leftValue": "={{ $json.body.action }}",
+                    "rightValue": "delete_specific",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -720,
+        224
+      ],
+      "id": "ef3dcb35-215d-4002-adec-c372dcb1f090",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "operation": "clear",
+        "documentId": {
+          "__rl": true,
+          "value": "1",
+          "mode": "list",
+          "cachedResultName": "Scrab hotels data ",
+          "cachedResultUrl": "https://docs.google.com/sprevesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/#gid=0"
+        },
+        "clear": "specificRows",
+        "startIndex": 2,
+        "rowsToDelete": 200
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -288,
+        208
+      ],
+      "id": "ca0a6b83-4f56-4451-9749-37829486aec3",
+      "name": "Clear sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "egNomy9EvgCP7ZBb",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// استلام أرقام الأسطر المرسلة من الداشبورد\nconst rows = $input.first().json.body.rows;\n\n// تحويل الأرقام إلى قيم رياضية وترتيبها تنازلياً (من الأكبر للأصغر) لتفادي أخطاء إزاحة الأسطر\nconst sortedRows = rows.map(Number).sort((a, b) => b - a);\n\n// تقسيم الأرقام إلى عناصر منفصلة (Items) لتمريرها لعقدة Google Sheets\nreturn sortedRows.map(rowNum => {\n    return { json: { row_number: rowNum } };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -512,
+        368
+      ],
+      "id": "97df862f-1f76-4004-887f-dc69ea2ba847",
+      "name": "delete specific"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "documentId": {
+          "__rl": true,
+          "value": "",
+          "mode": "list",
+          "cachedResultName": "Scrab hotels data ",
+          "cachedResultUrl": "https://docs.google.com/s=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.googebit#gid=0"
+        },
+        "startIndex": "={{ $json.row_number }}"
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -288,
+        368
+      ],
+      "id": "3797ca52-a9cd-4b25-88bc-21fb132806e5",
+      "name": "Delete items in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "egNomy9EvgCP7ZBb",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "documentId": {
+          "__rl": true,
+          "value": "1",
+          "mode": "list",
+          "cachedResultName": "Scrab hotels data ",
+          "cachedResultUrl": "https://ddk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheed=0"
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1440,
+        -384
+      ],
+      "id": "9e311d42-79b3-4ac8-a6cf-f0b929e4b595",
+      "name": "Delete rows or columns from sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "egNomy9EvgCP7ZBb",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "6c91e4e5-c53a-4e44-bf3c-fd85d6892f28",
+              "leftValue": "={{ $('حساب المسافة لمركز المدينة').item.json.shouldDelete }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1232,
+        -368
+      ],
+      "id": "10327325-d0a3-4820-8dee-3ecd491ade40",
+      "name": "If2"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1840,
+        -208
+      ],
+      "id": "4c95eec2-e655-4598-8145-7d1256f0aa9b",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1616,
+        -384
+      ],
+      "id": "b2d155a6-a121-40c1-98ac-55a9114d4854",
+      "name": "]]]]]]"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "Extract city and hotel coordinates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "حساب المسافة لمركز المدينة": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract city and hotel coordinates": {
+      "main": [
+        [
+          {
+            "node": "Request city coords",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Request city coords": {
+      "main": [
+        [
+          {
+            "node": "Request POI coords",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Request POI coords": {
+      "main": [
+        [
+          {
+            "node": "حساب المسافة لمركز المدينة",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Clear sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "delete specific",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "delete specific": {
+      "main": [
+        [
+          {
+            "node": "Delete items in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete rows or columns from sheet1": {
+      "main": [
+        [
+          {
+            "node": "]]]]]]",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Delete rows or columns from sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "]]]]]]": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "ff96be4e-8473-4b2f-9fad-950785eede69",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6910758932b77532402610235103e29b01ae6eeb092a753a2c6315ade1ab31fa"
+  },
+  "nodeGroups": [],
+  "id": "y3EvVX57N7Kk9Izr",
+  "tags": []
+}

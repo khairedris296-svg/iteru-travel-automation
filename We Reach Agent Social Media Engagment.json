@@ -1,0 +1,1197 @@
+{
+  "name": "We Reach Agent Social Media Engagment",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "f",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1888,
+        -480
+      ],
+      "id": "8d4ac3a1-0a2c-4409-a57d-e1a0e7e8bf92",
+      "name": "Webhook",
+      "webhookId": "09a35c7c-dfba-4629-b35e-fc8e7d59795f"
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "endpoint": "https://api.buffer.com",
+        "query": "=mutation CreateMyPost($myText: String!, $myVideoUrl: String!) {\n createPost(input: {\n channelId: \"6a040cfc090476fb99142a26\"\n text: $myText\n schedulingType: automatic\n mode: shareNow\n assets: [\n  {\n  video: {\n   url: $myVideoUrl\n  }\n  }\n ]\n metadata: {\n  instagram: {\n  type: reel \n  shouldShareToFeed: true\n  }\n }\n }) {\n ... on PostActionSuccess {\n  post {\n  id\n  status\n  }\n }\n ... on MutationError {\n  message\n }\n }\n}",
+        "variables": "={{ { \"myText\": $('Insta hummanizer').item.json.output, \"myVideoUrl\": $('instagram dispatcher1').item.json.instagram_image_url } }}"
+      },
+      "type": "n8n-nodes-base.graphql",
+      "typeVersion": 1.1,
+      "position": [
+        896,
+        432
+      ],
+      "id": "06a004c9-61c6-4e91-8fb5-74302e2328e2",
+      "name": "GraphQL",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "9tesMxqVhGrOuDuv",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.shotstack.io/edit/stage/render/{{ $('HTTP Request1').item.json.response.id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "سب"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        688,
+        432
+      ],
+      "id": "64b0e852-e8c4-467a-b7f7-39d89bee5e12",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "42e95d3c-d295-417b-bb05-e1fba8428411",
+              "name": "prompt",
+              "value": "={{ $json.body.prompt }}",
+              "type": "string"
+            },
+            {
+              "id": "e3b586f5-6c55-4baf-9da7-9d6554de710c",
+              "name": "price",
+              "value": "={{ $json.body.price }}",
+              "type": "string"
+            },
+            {
+              "id": "b176ad26-f2c0-484d-8408-506989c2fb61",
+              "name": "destination",
+              "value": "={{ $json.body.destination }}",
+              "type": "string"
+            },
+            {
+              "id": "5259fe0e-6ac5-4ad3-89a2-5c82cf91d59b",
+              "name": "Date / Duration",
+              "value": "={{ $json.body.date }}",
+              "type": "string"
+            },
+            {
+              "id": "4c4853f2-72fc-42f3-8383-ac4c363d8d69",
+              "name": "mode",
+              "value": "={{ $json.body.mode }}",
+              "type": "string"
+            },
+            {
+              "id": "cb8406a9-b8f3-4c49-af99-5fc30c8a2a12",
+              "name": "category",
+              "value": "={{ $json.body.category }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1072,
+        -464
+      ],
+      "id": "7ffd0ce0-c9d3-47ed-8214-61a7d4018d36",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "respondWith": "binary",
+        "responseDataSource": "set",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "X-Generated-Text",
+                "value": "={{ encodeURIComponent($('Message a model1').first().json.content.parts[0].text) }}"
+              },
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Expose-Headers",
+                "value": "X-Generated-Text"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        656,
+        -448
+      ],
+      "id": "9c6b3103-03e8-42b3-8f47-d42eaf6fc90b",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1g",
+          "mode": "list",
+          "cachedResultName": "Excutions times content generating",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1j4J3i5RvM9nfc1I2lMXvgSXdIIoO4ZJvyJhFQSVf7nY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1j4J3i5RvM9nfc1I2lMXvgSXdIIoO4ZJvyJhFQSVf7nY/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        496,
+        -1824
+      ],
+      "id": "14da3a0c-9d65-438e-837e-13417906a21e",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "egNomy9EvgCP7ZBb",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3.7-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3.7-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "### ROLE:\nAct as a High-End Luxury Travel Curator & Marketing Specialist for an exclusive Instagram Travel Agency account.\n\n### CONTEXT:\nDestination / Property: {{ $json.destination }}\nDuration / Dates: {{ $json.date }}\nPackage Price: {{ $json.price }}\nCore Offering: {{ $json.offering }}\n\n### TASK:\nTransform these travel offer details into a high-converting, visually structured, and captivating Instagram caption that drives inquiries and bookings.\n\n### GUIDELINES:\n1. WRITING STYLE: Use high \"burstiness\"—mix short, punchy sentences with vivid luxury imagery. Sound exclusive, refined, and inviting. Strictly avoid overused clichés and generic AI terms (like \"unleash\", \"elevate\", \"paradise awaits\", \"nestled in the heart of\", \"cutting-edge\").\n2. BOOKING CALL TO ACTION (CRITICAL): Instagram captions do NOT support clickable links.\n   - NEVER output a raw URL.\n   - You MUST direct users clearly to **DM us for instant booking** or use the **Link in Bio**.\n   - Make the offer details (Price, Duration, Inclusions) stand out cleanly.\n3. FORMATTING:\n   - Start with an irresistible hook line in ALL CAPS.\n   - Use clean line breaks for smooth mobile reading.\n   - Include 4-6 tasteful, luxury/travel emojis scattered naturally.\n4. HASHTAGS: Provide exactly 8-12 targeted travel hashtags (a mix of high-volume tags like #LuxuryTravel and destination-specific tags).\n5. STRICT LENGTH LIMIT: The entire text, INCLUDING hashtags, MUST be strictly UNDER 800 characters to ensure fast API rendering and high mobile readability.\n\n### OUTPUT STRUCTURE:\n[CATCHY HOOK IN ALL CAPS] ✈️\n\n[Vivid, bursty description of the destination vibe & experience]\n\n📍 Destination: {{ $json.destination }}\n⏳ Duration: {{ $json.date }}\n💰 Package: {{ $json.price }}\n✨ Includes: {{ $json.offering }}\n\n[Strong CTA: \"📩 Send us a DM with 'BOOK' or click the Link in Bio to reserve your spot!\"]\n.\n.\n.\n#Tag1 #Tag2 #Tag3 #Tag4 #Tag5 #Tag6 #Tag7 #Tag8"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        -112,
+        -448
+      ],
+      "id": "a39f7d9b-96bb-4566-a32b-acc4efd32d56",
+      "name": "Message a model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "YVWAy92F4dlb7mz9",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3.8-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3.8-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are a strict AI image prompt generation engine. Your ONLY task is to create a highly detailed, cinematic, high-end luxury graphic poster prompt for Flux image generation.\n\nCRITICAL RULES:\n\nOutput ONLY the raw final English image prompt text.\n\nAbsolutely NO greetings, NO explanations, NO markdown code blocks, and NO headers (e.g., do NOT write \"Here is your prompt:\").\n\nSeamlessly incorporate elegant typography instructions into the prompt to render clear text overlays for destination, price, and duration where appropriate.\n\nINCOMING CAMPAIGN DATA:\n\nCategory / Theme: {{ $json.category }}\n\nMain Topic / Destination: {{ $json.destination }}\n\nPrice / Offer: {{ $json.price }}\n\nDate / Duration: {{ $json['Date / Duration'] }}\n\nExtra Details / Style: {{ $json.prompt }}\n\nGENERATE THE FINAL PROMPT NOW:"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        -576,
+        -544
+      ],
+      "id": "4a0a1b56-0673-4299-913c-c7ddf9452d5d",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "YVWAy92F4dlb7mz9",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3.1-flash-image",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3.1-flash-image (Nano Banana 2)"
+        },
+        "prompt": "={{ $('Message a model').item.json.content.parts[0].text }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        240,
+        -448
+      ],
+      "id": "a7280c80-54e5-4a0c-a585-2eb2e41f0469",
+      "name": "Generate an image",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "YVWAy92F4dlb7mz9",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "966a302d-5d98-4b95-86ce-bf05ffd035d0",
+              "leftValue": "={{ $json.mode }}",
+              "rightValue": "manual",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -864,
+        -464
+      ],
+      "id": "cb6ee922-f982-48a3-89ae-8dfad21453b5",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3.8-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3.8-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are an expert AI image prompt generator specializing in high-end sports events and luxury sports travel. Based on the user's inputs (Destination: {{ $json.body.destination }}, Price: {{ $json.body.price }}, Offering: {{$json.body.offering }}), create a highly detailed, photorealistic Midjourney/Flux prompt for a premium sports event package. Focus on dynamic action, grand stadium/arena atmosphere, VIP seating experiences, luxury hospitality, and high-quality cinematic lighting. Output ONLY the English prompt text without any conversational filler."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        -576,
+        -1120
+      ],
+      "id": "cb53006c-a4a6-435b-bbb7-57536605e1d1",
+      "name": "Message a model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "YVWAy92F4dlb7mz9",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3.8-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3.8-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are an expert AI image prompt generator specializing in high-end adventure and luxury safari travel. Based on the user's inputs (Destination: {{ $json.body.destination }}, Price: {{ $json.body.price }}, Offering: {{$json.body.offering }}), create a highly detailed, photorealistic Midjourney/Flux prompt for a premium adventure or safari experience. Focus on breathtaking natural landscapes, exotic wildlife encounters, luxury glamping or eco-lodges, rugged yet elegant aesthetics, and stunning golden-hour or dramatic lighting. Output ONLY the English prompt text without any conversational filler."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        -576,
+        -848
+      ],
+      "id": "a54355c3-89f8-448a-a0df-237d34705753",
+      "name": "Message a model3",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "YVWAy92F4dlb7mz9",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.category }}",
+                    "rightValue": "sports",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "7c78823c-d60b-46e6-9dba-ab6348fd0b73"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Sports"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "32a95815-a5a3-48ac-ba02-0424768f4f2f",
+                    "leftValue": "={{ $json.body.category }}",
+                    "rightValue": "=adventure",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Adventure"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -1376,
+        -512
+      ],
+      "id": "d0bb285d-e9d3-4b7f-8dc8-de14f5734433",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "42e95d3c-d295-417b-bb05-e1fba8428411",
+              "name": "prompt",
+              "value": "={{ $json.body.prompt }}",
+              "type": "string"
+            },
+            {
+              "id": "e3b586f5-6c55-4baf-9da7-9d6554de710c",
+              "name": "price",
+              "value": "={{ $json.body.price }}",
+              "type": "string"
+            },
+            {
+              "id": "b176ad26-f2c0-484d-8408-506989c2fb61",
+              "name": "destination",
+              "value": "={{ $json.body.destination }}",
+              "type": "string"
+            },
+            {
+              "id": "5259fe0e-6ac5-4ad3-89a2-5c82cf91d59b",
+              "name": "Date / Duration",
+              "value": "={{ $json.body.schedule }}",
+              "type": "string"
+            },
+            {
+              "id": "4c4853f2-72fc-42f3-8383-ac4c363d8d69",
+              "name": "mode",
+              "value": "={{ $json.body.mode }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1072,
+        -1040
+      ],
+      "id": "34eb37fc-a376-44c7-bdf4-eb81f3b5c64e",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "966a302d-5d98-4b95-86ce-bf05ffd035d0",
+              "leftValue": "={{ $json.mode }}",
+              "rightValue": "manual",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -864,
+        -1040
+      ],
+      "id": "262ec4df-fb5c-4e35-b531-009e82fb848e",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "42e95d3c-d295-417b-bb05-e1fba8428411",
+              "name": "prompt",
+              "value": "={{ $json.body.prompt }}",
+              "type": "string"
+            },
+            {
+              "id": "e3b586f5-6c55-4baf-9da7-9d6554de710c",
+              "name": "price",
+              "value": "={{ $json.body.price }}",
+              "type": "string"
+            },
+            {
+              "id": "b176ad26-f2c0-484d-8408-506989c2fb61",
+              "name": "destination",
+              "value": "={{ $json.body.destination }}",
+              "type": "string"
+            },
+            {
+              "id": "5259fe0e-6ac5-4ad3-89a2-5c82cf91d59b",
+              "name": "Date / Duration",
+              "value": "={{ $json.body.schedule }}",
+              "type": "string"
+            },
+            {
+              "id": "4c4853f2-72fc-42f3-8383-ac4c363d8d69",
+              "name": "mode",
+              "value": "={{ $json.body.mode }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1072,
+        -768
+      ],
+      "id": "726c1906-54d7-4e83-951e-4ad8c65ff280",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "966a302d-5d98-4b95-86ce-bf05ffd035d0",
+              "leftValue": "={{ $json.mode }}",
+              "rightValue": "manual",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -864,
+        -768
+      ],
+      "id": "ef29b824-3103-49ed-bec1-b44e3e802a4d",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3.8-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3.8-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "="
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        -32,
+        256
+      ],
+      "id": "ccf0d734-3714-432d-9a93-b28aa36d7af7",
+      "name": "Message a model4",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "YVWAy92F4dlb7mz9",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "c9c99b14-2f1a-4697-ba0d-fd1c7d7f4861",
+              "leftValue": "={{ $json.body.category }}",
+              "rightValue": "standard",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1680,
+        -480
+      ],
+      "id": "caa77c26-3487-45a9-a1b8-aa155df3283c",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "c9c99b14-2f1a-4697-ba0d-fd1c7d7f4861",
+              "leftValue": "={{ $json.body.mode }}",
+              "rightValue": "generate",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1472,
+        -160
+      ],
+      "id": "9f07ae34-9671-43be-83fe-c6313cf317b6",
+      "name": "If4"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "c9c99b14-2f1a-4697-ba0d-fd1c7d7f4861",
+              "leftValue": "={{ $json.body.mode }}",
+              "rightValue": "generate",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1152,
+        192
+      ],
+      "id": "6e3cc859-15a4-4ede-8e0e-8362b0f173c1",
+      "name": "If5"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{\n  JSON.stringify({\n    \"imageUrl\": $('Generate an image1').item.json.url,\n    \"caption\": $('Message a model5').item.json.content.parts[0].text\n  })\n}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        688,
+        -1024
+      ],
+      "id": "84c62469-ff86-4a5a-b062-734c7d9a7b24",
+      "name": "Respond to Webhook1"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3.7-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3.7-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "### ROLE:\nAct as a High-End Luxury Travel Curator & Marketing Specialist for an exclusive Instagram Travel Agency account.\n\n### CONTEXT:\nDestination / Property: {{ $json.destination }}\nDuration / Dates: {{ $json.date }}\nPackage Price: {{ $json.price }}\nCore Offering: {{ $json.offering }}\n\n### TASK:\nTransform these travel offer details into a high-converting, visually structured, and captivating Instagram caption that drives inquiries and bookings.\n\n### GUIDELINES:\n1. WRITING STYLE: Use high \"burstiness\"—mix short, punchy sentences with vivid luxury imagery. Sound exclusive, refined, and inviting. Strictly avoid overused clichés and generic AI terms (like \"unleash\", \"elevate\", \"paradise awaits\", \"nestled in the heart of\", \"cutting-edge\").\n2. BOOKING CALL TO ACTION (CRITICAL): Instagram captions do NOT support clickable links.\n   - NEVER output a raw URL.\n   - You MUST direct users clearly to **DM us for instant booking** or use the **Link in Bio**.\n   - Make the offer details (Price, Duration, Inclusions) stand out cleanly.\n3. FORMATTING:\n   - Start with an irresistible hook line in ALL CAPS.\n   - Use clean line breaks for smooth mobile reading.\n   - Include 4-6 tasteful, luxury/travel emojis scattered naturally.\n4. HASHTAGS: Provide exactly 8-12 targeted travel hashtags (a mix of high-volume tags like #LuxuryTravel and destination-specific tags).\n5. STRICT LENGTH LIMIT: The entire text, INCLUDING hashtags, MUST be strictly UNDER 800 characters to ensure fast API rendering and high mobile readability.\n\n### OUTPUT STRUCTURE:\n[CATCHY HOOK IN ALL CAPS] ✈️\n\n[Vivid, bursty description of the destination vibe & experience]\n\n📍 Destination: {{ $json.destination }}\n⏳ Duration: {{ $json.date }}\n💰 Package: {{ $json.price }}\n✨ Includes: {{ $json.offering }}\n\n[Strong CTA: \"📩 Send us a DM with 'BOOK' or click the Link in Bio to reserve your spot!\"]\n.\n.\n.\n#Tag1 #Tag2 #Tag3 #Tag4 #Tag5 #Tag6 #Tag7 #Tag8"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        224,
+        -1024
+      ],
+      "id": "e0f5dce0-cc64-4841-be50-e4842aa5162a",
+      "name": "Message a model5",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "YVWAy92F4dlb7mz9",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3.1-flash-image",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3.1-flash-image (Nano Banana 2)"
+        },
+        "prompt": "={{ $json.content.parts[0].text }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        -64,
+        -1024
+      ],
+      "id": "464fcdcc-0cd5-43af-bd95-a7ae4756d61e",
+      "name": "Generate an image1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "YVWAy92F4dlb7mz9",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{\n  JSON.stringify({\n    \"imageUrl\": $('Generate an image2').item.json.url,\n    \"caption\": $('Message a model6').item.json.content.parts[0].text\n  })\n}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        688,
+        -752
+      ],
+      "id": "3023c66c-d901-49a0-8133-c4ef6dcde4af",
+      "name": "Respond to Webhook2"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3.7-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3.7-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "### ROLE:\nAct as a High-End Luxury Travel Curator & Marketing Specialist for an exclusive Instagram Travel Agency account.\n\n### CONTEXT:\nDestination / Property: {{ $json.destination }}\nDuration / Dates: {{ $json.date }}\nPackage Price: {{ $json.price }}\nCore Offering: {{ $json.offering }}\n\n### TASK:\nTransform these travel offer details into a high-converting, visually structured, and captivating Instagram caption that drives inquiries and bookings.\n\n### GUIDELINES:\n1. WRITING STYLE: Use high \"burstiness\"—mix short, punchy sentences with vivid luxury imagery. Sound exclusive, refined, and inviting. Strictly avoid overused clichés and generic AI terms (like \"unleash\", \"elevate\", \"paradise awaits\", \"nestled in the heart of\", \"cutting-edge\").\n2. BOOKING CALL TO ACTION (CRITICAL): Instagram captions do NOT support clickable links.\n   - NEVER output a raw URL.\n   - You MUST direct users clearly to **DM us for instant booking** or use the **Link in Bio**.\n   - Make the offer details (Price, Duration, Inclusions) stand out cleanly.\n3. FORMATTING:\n   - Start with an irresistible hook line in ALL CAPS.\n   - Use clean line breaks for smooth mobile reading.\n   - Include 4-6 tasteful, luxury/travel emojis scattered naturally.\n4. HASHTAGS: Provide exactly 8-12 targeted travel hashtags (a mix of high-volume tags like #LuxuryTravel and destination-specific tags).\n5. STRICT LENGTH LIMIT: The entire text, INCLUDING hashtags, MUST be strictly UNDER 800 characters to ensure fast API rendering and high mobile readability.\n\n### OUTPUT STRUCTURE:\n[CATCHY HOOK IN ALL CAPS] ✈️\n\n[Vivid, bursty description of the destination vibe & experience]\n\n📍 Destination: {{ $json.destination }}\n⏳ Duration: {{ $json.date }}\n💰 Package: {{ $json.price }}\n✨ Includes: {{ $json.offering }}\n\n[Strong CTA: \"📩 Send us a DM with 'BOOK' or click the Link in Bio to reserve your spot!\"]\n.\n.\n.\n#Tag1 #Tag2 #Tag3 #Tag4 #Tag5 #Tag6 #Tag7 #Tag8"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        224,
+        -752
+      ],
+      "id": "3ad3e0b7-7670-48f8-a450-a8a62bfe8bc2",
+      "name": "Message a model6",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "YVWAy92F4dlb7mz9",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3.1-flash-image",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3.1-flash-image (Nano Banana 2)"
+        },
+        "prompt": "={{ $json.content.parts[0].text }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        -64,
+        -752
+      ],
+      "id": "4394c208-02ca-4abd-a5ce-bd0325d8ada2",
+      "name": "Generate an image2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "YVWAy92F4dlb7mz9",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "incomplete part .. still need the edit image part and schedule the insta post on buffer ",
+        "height": 1120,
+        "width": 2816
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1184,
+        -224
+      ],
+      "id": "760cf381-8e60-4074-99eb-b002f0bf19af",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        []
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        []
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Message a model1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model1": {
+      "main": [
+        [
+          {
+            "node": "Generate an image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Message a model1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Message a model2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Generate an image1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Message a model3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Generate an image2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model2": {
+      "main": [
+        [
+          {
+            "node": "Generate an image1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model3": {
+      "main": [
+        [
+          {
+            "node": "Generate an image2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate an image": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model4": {
+      "main": [
+        []
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [],
+        [
+          {
+            "node": "If5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model5": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate an image1": {
+      "main": [
+        [
+          {
+            "node": "Message a model5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model6": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate an image2": {
+      "main": [
+        [
+          {
+            "node": "Message a model6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "a8f45c41-a5e2-4568-9db6-62a994df17a6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6910758932b77532402610235103e29b01ae6eeb092a753a2c6315ade1ab31fa"
+  },
+  "nodeGroups": [],
+  "id": "UYKYtbIUkmZ3xqGB",
+  "tags": []
+}
