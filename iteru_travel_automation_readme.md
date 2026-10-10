@@ -1,7 +1,7 @@
 # ✈️ Iteru Travel Automation Suite
 
-**Submitted for:** 7th Global AI Hackathon (Hack-Nation)
-**Track:** World Bank - Small AI for development (Track C: Tourism)
+**System Type:** Enterprise Multi-Agent AI & Workflow Automation
+**Target Industry:** B2B Travel Agencies, Tourism Operations
 
 ## 📌 Project Overview
 Iteru Travel Automation Suite is a robust, multi-agent AI system designed to solve the most pressing operational bottlenecks in modern travel agencies. By combining deterministic automation with advanced generative AI, this suite eliminates manual data entry, monitors customer service quality in real-time, and generates instant marketing assets.
@@ -10,7 +10,7 @@ Iteru Travel Automation Suite is a robust, multi-agent AI system designed to sol
 This system is composed of four primary AI/Automation agents working in tandem:
 
 1. **WhatsApp Monitor Agent (Customer Success):** 
-   Monitors customer service chats to detect slow response times. It utilizes **Gemini AI** to analyze the context of the conversation, determine customer sentiment (e.g., urgent, angry, inquiring), and generate real-time summaries and suggested actions for supervisors.
+   Monitors customer service chats to track response delays and enforce communication SLAs. It dynamically handles messages based on working vs. off-hours schedules, triggers automated replies after precise time thresholds, and dispatches real-time delay alerts to supervisors to ensure no customer is left waiting.
    
 2. **Hotel Scraper Agent (Market Intelligence):** 
    Automates the extraction of hotel pricing and availability from global aggregators (like Booking.com) and local B2B tourism platforms. It structures the data for immediate competitive analysis.
@@ -31,11 +31,5 @@ This system is composed of four primary AI/Automation agents working in tandem:
 ## ⚠️️ Important Security & NDA Notice for Judges
 This project was built to interface with real B2B travel agency systems, live financial data, and private customer communications. 
 
-Due to **strict Non-Disclosure Agreements (NDAs), data privacy laws, and security protocols**, the actual live environment, database credentials, API keys, and raw business data **cannot be shared in this public repository**. 
+Due to **strict Non-Disclosure Agreements (NDAs), data privacy laws, and security protocols**, the actual live environment, JSON Automation files, HTML dashboards files, database credentials, API keys, and raw business data **cannot be shared in this public repository**. 
 
-### What is included in this repository?
-To allow judges to review the architectural complexity and logic of the system, we have included the **exported `.json` workflow files from n8n**. 
-
-Judges can review these JSON files by importing them into any local or cloud n8n instance to examine the node structures, API calls (sanitized), and AI integration logic.
-
-*Please refer to our **Demo Video** submitted via the hackathon portal to see the system operating live in a secure, mock-data environment.*
