@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <title>ITERU INTELLIGENCE - Portfolio</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
+        
+        @page {
+            size: A4;
+            margin: 15mm 15mm;
+            background-color: #050505;
+        }
+
+        *, *::before, *::after { 
+            box-sizing: border-box; 
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #050505;
+            color: #e5e5e5;
+            line-height: 1.6;
+        }
+
+        /* Colors based on your visual identity */
+        .text-gold { color: #eab308; }
+        .text-blue { color: #3b82f6; }
+        .text-white { color: #ffffff; }
+
+        /* Header Section */
+        .header {
+            text-align: center;
+            padding: 40px 20px 30px 20px;
+            border-bottom: 1px solid #1f2937;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 36pt;
+            font-weight: 900;
+            letter-spacing: 2px;
+            line-height: 1.1;
+        }
+
+        .header .brand-sub {
+            display: block;
+            font-size: 16pt;
+            font-weight: 800;
+            letter-spacing: 6px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+        }
+
+        .header p {
+            margin: 0;
+            font-size: 13pt;
+            color: #9ca3af;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* Container */
+        .container {
+            padding: 0 10px;
+        }
+
+        /* Section Titles */
+        h2 {
+            color: #ffffff;
+            font-size: 18pt;
+            border-left: 4px solid #eab308;
+            padding-left: 12px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        /* Value Proposition */
+        .value-prop {
+            background-color: #121212;
+            border-radius: 8px;
+            padding: 25px;
+            font-size: 12pt;
+            margin-bottom: 30px;
+            border: 1px solid #27272a;
+            color: #d1d5db;
+        }
+
+        .value-prop strong {
+            color: #eab308;
+            font-size: 13pt;
+        }
+
+        /* Target Sectors */
+        .sectors {
+            background-color: #121212;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 1px solid #27272a;
+        }
+
+        .sectors ul {
+            margin: 0;
+            padding-left: 20px;
+            color: #d1d5db;
+        }
+
+        .sectors li {
+            font-size: 11pt;
+            margin-bottom: 12px;
+        }
+
+        .sectors li strong {
+            color: #3b82f6;
+        }
+
+        /* Projects Section */
+        .project-item {
+            background-color: #121212;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid #27272a;
+            page-break-inside: avoid;
+        }
+
+        .project-header {
+            margin-bottom: 12px;
+        }
+
+        .project-title {
+            font-size: 15pt;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .project-impact {
+            display: inline-block;
+            background-color: rgba(234, 179, 8, 0.1);
+            color: #eab308;
+            padding: 4px 12px;
+            border-radius: 4px;
+            border: 1px solid rgba(234, 179, 8, 0.2);
+            font-size: 10pt;
+            font-weight: 700;
+            margin-top: 8px;
+        }
+
+        .project-desc {
+            font-size: 11pt;
+            color: #9ca3af;
+            margin-bottom: 15px;
+            margin-top: 10px;
+        }
+
+        /* Buttons & Links */
+        .btn-blue {
+            display: inline-block;
+            background-color: #2563eb;
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 10pt;
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: background-color 0.2s;
+        }
+        
+        .btn-blue:hover {
+            background-color: #1d4ed8;
+        }
+
+        /* Image Display */
+        .dashboard-img {
+            width: 100%;
+            border-radius: 6px;
+            border: 1px solid #27272a;
+            margin-top: 10px;
+            display: block;
+        }
+
+        /* Services Categories */
+        .services-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 15px 0;
+            margin: 0 -15px 25px -15px;
+        }
+
+        .service-card {
+            background-color: #121212;
+            border-radius: 8px;
+            padding: 20px;
+            vertical-align: top;
+            width: 33.33%;
+            border-top: 4px solid #3b82f6;
+            border-left: 1px solid #27272a;
+            border-right: 1px solid #27272a;
+            border-bottom: 1px solid #27272a;
+        }
+
+        .service-card h3 {
+            color: #ffffff;
+            font-size: 13pt;
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .service-card p {
+            font-size: 10pt;
+            color: #9ca3af;
+            margin: 0;
+        }
+
+        /* Contact Section */
+        .contact-box {
+            background-color: #121212;
+            border-radius: 8px;
+            padding: 25px;
+            border: 1px solid #27272a;
+            margin-top: 30px;
+            page-break-inside: avoid;
+        }
+
+        .contact-grid {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .contact-td {
+            width: 50%;
+            vertical-align: top;
+            padding: 8px 10px;
+        }
+
+        .contact-label {
+            display: block;
+            font-size: 9pt;
+            text-transform: uppercase;
+            color: #6b7280;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .contact-value {
+            font-size: 11pt;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .contact-link {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 11pt;
+        }
+
+        /* Tech Stack */
+        .tech-stack {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #27272a;
+            color: #6b7280;
+            font-size: 10pt;
+            font-weight: 600;
+            page-break-inside: avoid;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>
+            <span class="text-gold">ITERU</span>
+            <span class="text-blue brand-sub">INTELLIGENCE</span>
+        </h1>
+        <p>ENGINEER. AUTOMATE. DOMINATE.</p>
+    </div>
+
+    <div class="container">
+        
+        <div class="value-prop">
+            <strong>At ITERU INTELLIGENCE</strong> we build comprehensive smart systems that transform complex and routine tasks into self-driving operations. By blending the power of Artificial Intelligence with custom high-end front-end dashboards we deliver tailored technical solutions that reflect your brand identity and maximize your team's productivity.
+        </div>
+
+        <h2>Sectors We Serve</h2>
+        <div class="sectors">
+            <p style="margin-top:0; font-size:11pt; color:#9ca3af; margin-bottom: 15px;">We provide flexible scalable and highly customized solutions tailored to the precise needs of various work environments:</p>
+            <ul>
+                <li><strong>E-commerce Platforms:</strong> Automating store operations inventory management and intelligent customer service.</li>
+                <li><strong>Agencies & Offices:</strong> Tailored solutions for travel agencies consulting firms and offices relying heavily on data processing and rapid client communication.</li>
+                <li><strong>Corporate & Industrial:</strong> Eliminating wasted hours on routine Excel tasks financial reconciliations and administrative workflows.</li>
+            </ul>
+        </div>
+
+        <h2>Featured Solutions & Use Cases</h2>
+
+        <!-- Project 1 -->
+        <div class="project-item">
+            <div class="project-header">
+                <p class="project-title">Data Reconciliation Agent</p>
+                <div class="project-impact">Saves 14+ hours/week</div>
+            </div>
+            <p class="project-desc">
+                An intelligent system that instantly matches and reconciles thousands of complex data records across different platforms. It eliminates human error and frees up employees to focus on strategic tasks rather than exhausting manual labor.
+            </p>
+            <img src="dashboard22.png" class="dashboard-img" alt="Reconciliation Automation Workflow">
+        </div>
+
+        <!-- Project 2 -->
+        <div class="project-item">
+            <div class="project-header">
+                <p class="project-title">Data Scraping & Analysis System</p>
+                <div class="project-impact">Saves 15+ hours/week</div>
+            </div>
+            <p class="project-desc">
+                A smart agent that extracts and processes data from multiple sources like scraping hotel data from 10+ different websites. The system filters analyzes and displays the structured data on a custom-built dashboard allowing staff to compare prices and specifications effortlessly to make the best decisions.
+            </p>
+            <img src="dashboard.png" class="dashboard-img" alt="Custom Dashboard Interface">
+        </div>
+
+        <!-- Project 3 -->
+        <div class="project-item">
+            <div class="project-header">
+                <p class="project-title">Internal SLA & Response Monitor (AI Admin)</p>
+                <div class="project-impact">Ensures 100% Client Response Rate</div>
+            </div>
+            <p class="project-desc">
+                An internal AI monitoring agent designed to oversee staff-client communications. It tracks response times and automatically sends escalating alerts to employees if a customer is left waiting past a specific timeframe. Once a reply is sent the AI logs the interaction and halts the alerts to ensure zero dropped leads and premium customer satisfaction.
+            </p>
+        </div>
+
+        <!-- Project 4 -->
+        <div class="project-item">
+            <div class="project-header">
+                <p class="project-title">Customer Service AI Chatbot</p>
+                <div class="project-impact">24/7 Instant Response</div>
+            </div>
+            <p class="project-desc">
+                An advanced AI chatbot tailored for mobile phones accessories and electronics stores. It goes beyond answering repetitive company policy questions by analyzing customer requirements and proactively recommending available products. This allows it to act as a professional digital sales representative.
+            </p>
+            <a href="https://www.loom.com/share/5a4322551a20447786cda4b4240e311c" target="_blank" class="btn-blue">▶ Watch Demo Video</a>
+        </div>
+
+        <h2>How We Work</h2>
+        <table class="services-table">
+            <tr>
+                <td class="service-card">
+                    <h3>1. Discovery & Customization</h3>
+                    <p>We analyze your routine tasks and bottlenecks to build a 100% customized solution that integrates flawlessly with your workflow.</p>
+                </td>
+                <td class="service-card">
+                    <h3>2. Software Engineering & AI</h3>
+                    <p>We utilize the latest AI technologies to build robust systems alongside developing custom front-end interfaces that match your brand.</p>
+                </td>
+                <td class="service-card">
+                    <h3>3. Deployment & Maintenance</h3>
+                    <p>We ensure secure deployment on cloud servers (Cloud/Docker) to guarantee absolute stability and zero downtime.</p>
+                </td>
+            </tr>
+        </table>
+
+        <h2>Get In Touch</h2>
+        <div class="contact-box">
+            <table class="contact-grid">
+                <tr>
+                    <td class="contact-td">
+                        <span class="contact-label">Founder & Lead Automation Engineer</span>
+                        <span class="contact-value">KhairAllah Idriss</span>
+                    </td>
+                    <td class="contact-td">
+                        <span class="contact-label">Direct Contact / WhatsApp</span>
+                        <span class="contact-value text-gold">+961 81 128 782</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="contact-td" style="padding-top: 15px;">
+                        <span class="contact-label">Email Address</span>
+                        <a href="mailto:khairedris296@gmail.com" class="contact-link">khairedris296@gmail.com</a>
+                    </td>
+                    <td class="contact-td" style="padding-top: 15px;">
+                        <span class="contact-label">LinkedIn Profile</span>
+                        <a href="https://www.linkedin.com/in/khairallah-edris-56bb00292" target="_blank" class="contact-link">KhairAllah Edris</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="tech-stack">
+            AI Agents Integration | Automation Workflows | Custom Dashboards | Data Processing | Cloud Architecture
+        </div>
+
+    </div>
+</body>
+</html>
