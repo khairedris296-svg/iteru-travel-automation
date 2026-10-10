@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iteru Intelligence - Official Brochure</title>
+    <!-- استدعاء خط Inter المماثل للصورة تماماً -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700;800;900&family=Montserrat:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #070a12;
+            --gold-primary: #d4af37;
+            --gold-light: #fef1b8;
+            --blue-royal: #2f80ed;
+            --blue-glow: #00bfff;
+            --silver-light: #e2e8f0;
+            --silver-muted: #94a3b8;
+            --card-bg: rgba(15, 23, 42, 0.65);
+            --card-border: rgba(212, 175, 55, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--silver-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(47, 128, 237, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 50% 100%, rgba(212, 175, 55, 0.1) 0%, transparent 50%);
+        }
+
+        /* حاوية Poster بمقاس ستوري الواتساب */
+        .poster {
+            width: 100%;
+            max-width: 580px;
+            background: rgba(11, 16, 27, 0.95);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 28px;
+            padding: 45px 35px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8),
+                        0 0 30px rgba(47, 128, 237, 0.1);
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Glow effects */
+        .poster::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 250px;
+            height: 250px;
+            background: rgba(212, 175, 55, 0.15);
+            filter: blur(80px);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        /* Header Styling matching the reference image */
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo-container {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.3));
+        }
+
+        /* تنسيق العنوان الرئيسي مطابق للصورة تماماً */
+        .brand-title-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .brand-iteru {
+            font-family: 'Inter', sans-serif;
+            font-size: 38px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #f1b212; /* ذهبي مشبع مطابق للصورة */
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .brand-intelligence {
+            font-family: 'Inter', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 6.5px;
+            text-transform: uppercase;
+            color: #3b82f6; /* أزرق صريح مطابق للصورة */
+            line-height: 1;
+        }
+
+        /* تنسيق السلوجان الرمادي الفضي بدون نيون */
+        .slogan-muted {
+            font-family: 'Inter', sans-serif;
+            font-size: 12.5px;
+            font-weight: 700;
+            letter-spacing: 3.5px;
+            text-transform: uppercase;
+            color: #808a9d; /* رمادي هادئ مطابق للصورة */
+            text-shadow: none; /* تم إلغاء التوهج تماماً */
+            margin-bottom: 22px;
+        }
+
+        .intro-desc {
+            font-size: 13.5px;
+            line-height: 1.6;
+            color: var(--silver-muted);
+            max-width: 460px;
+            margin: 0 auto;
+            font-weight: 400;
+        }
+
+        /* Agents Section */
+        .agents-container {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+            margin-bottom: 35px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .agent-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 20px;
+            padding: 24px;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .agent-card.gold-theme {
+            border-top: 3px solid var(--gold-primary);
+        }
+
+        .agent-card.blue-theme {
+            border-top: 3px solid var(--blue-royal);
+        }
+
+        .card-header {
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .agent-id {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .gold-theme .agent-id { color: var(--gold-primary); }
+        .blue-theme .agent-id { color: var(--blue-glow); }
+
+        .agent-subtitle {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--silver-muted);
+            font-style: italic;
+        }
+
+        .bullet-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .bullet-item {
+            font-size: 13px;
+            line-height: 1.5;
+            color: var(--silver-light);
+            position: relative;
+            padding-left: 18px;
+        }
+
+        .bullet-item::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            font-size: 18px;
+            top: -2px;
+        }
+
+        .gold-theme .bullet-item::before { color: var(--gold-primary); }
+        .blue-theme .bullet-item::before { color: var(--blue-glow); }
+
+        .bullet-title {
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        /* Footer Section */
+        .footer {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-tagline {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--gold-light);
+            margin-bottom: 15px;
+            letter-spacing: 0.5px;
+        }
+
+        .contact-box {
+            display: inline-flex;
+            gap: 20px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            padding: 10px 22px;
+            border-radius: 30px;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--silver-light);
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .contact-item span {
+            color: var(--blue-glow);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="poster">
+        
+        <!-- HEADER -->
+        <div class="header">
+            <div class="logo-container">
+                <img src="111047_2.jpg" alt="Iteru Intelligence Logo" onerror="this.style.display='none'">
+            </div>
+            
+            <!-- العنوان مطابق للصورة بالضبط: ITERU ذهبي وتحتها INTELLIGENCE أزرق -->
+            <div class="brand-title-box">
+                <span class="brand-iteru">ITERU</span>
+                <span class="brand-intelligence">INTELLIGENCE</span>
+            </div>
+            
+            <!-- السلوجان باللون الرمادي المطابق للصورة وبدون نيون -->
+            <div class="slogan-muted">ENGINEER. AUTOMATE. DOMINATE.</div>
+            
+            <p class="intro-desc">
+                Shaping the future of smart business. We build custom AI solutions that quietly upgrade your daily operations to the highest standard of excellence.
+            </p>
+        </div>
+
+        <!-- AGENTS SECTION -->
+        <div class="agents-container">
+            
+            <!-- Agent 01 -->
+            <div class="agent-card gold-theme">
+                <div class="card-header">
+                    <h2 class="agent-id">01 | WhatsApp Tracking Agent</h2>
+                    <p class="agent-subtitle">Raising the bar for customer communication.</p>
+                </div>
+                <ul class="bullet-list">
+                    <li class="bullet-item">
+                        <span class="bullet-title">Smart Monitoring:</span> Keeps a close eye on staff response times to ensure smooth and fast client interactions.
+                    </li>
+                    <li class="bullet-item">
+                        <span class="bullet-title">Instant Client Care:</span> Automatically steps in with a warm, professional hold message after a calculated delay, keeping the conversation active only when staff are occupied.
+                    </li>
+                    <li class="bullet-item">
+                        <span class="bullet-title">Manager Alerts:</span> If an inquiry remains unhandled past a set threshold, it sends an alert to management with full details.
+                    </li>
+                    <li class="bullet-item">
+                        <span class="bullet-title">Elevated Performance:</span> Guarantees a flawless customer experience while keeping your team operating at their best.
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Agent 02 -->
+            <div class="agent-card blue-theme">
+                <div class="card-header">
+                    <h2 class="agent-id">02 | Data Reconciliation Agent</h2>
+                    <p class="agent-subtitle">Flawless accuracy for your business data.</p>
+                </div>
+                <ul class="bullet-list">
+                    <li class="bullet-item">
+                        <span class="bullet-title">Lightning-Fast Matching:</span> Instantly compares and matches massive amounts of financial or operational records.
+                    </li>
+                    <li class="bullet-item">
+                        <span class="bullet-title">Smooth Integration:</span> Works perfectly and directly with the Excel and Google Sheets you already use.
+                    </li>
+                    <li class="bullet-item">
+                        <span class="bullet-title">Time Saved:</span> Takes over the heavy lifting of manual checking, giving your team hours of valuable time back.
+                    </li>
+                    <li class="bullet-item">
+                        <span class="bullet-title">Zero Mistakes:</span> Built to deliver 100% accurate data matching and complete peace of mind.
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <p class="footer-tagline">Iteru Intelligence — Elevating Your Business Standards.</p>
+            <div class="contact-box">
+                <div class="contact-item">
+                    <span>✉</span> khairedris296@gmail.com
+                </div>
+                <div class="contact-item">
+                    <span>✆</span> 81 128 782
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
