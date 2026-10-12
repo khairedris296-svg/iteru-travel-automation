@@ -1,0 +1,1995 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ITERU Intelligence - Dashboard</title>
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #0b0c10;
+            color: #ffffff;
+        }
+        .glass-panel {
+            background: rgba(25, 27, 33, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .iteru-yellow { color: #EAB308; }
+        .iteru-yellow-bg { background-color: #EAB308; }
+        .iteru-blue { color: #3B82F6; }
+        .iteru-blue-bg { background-color: #3B82F6; }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #0f1115;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #2a2e35;
+            border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #3B82F6;
+        }
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 10px 20px -10px rgba(59, 130, 246, 0.3);
+        }
+        select, select option {
+            background-color: #12131a !important;
+            color: #ffffff !important;
+        }
+        select option {
+            background-color: #191b24 !important;
+            color: #ffffff !important;
+        }
+        select option:hover, select option:checked {
+            background-color: #2563eb !important;
+            color: #ffffff !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col custom-scrollbar">
+
+    <!-- Top Navigation Bar -->
+    <header class="glass-panel border-b border-gray-800 sticky top-0 z-40 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <!-- Brand / Logo -->
+            <div class="flex items-center gap-3">
+                <div class="bg-yellow-500 text-black p-2 rounded-lg font-bold flex items-center justify-center w-10 h-10 shadow-lg">
+                    <i class="fas fa-satellite-dish text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-extrabold tracking-wider leading-none">
+                        <span class="iteru-yellow">ITERU</span> 
+                        <span style="color: #0066FF;">INTELLIGENCE</span>
+                    </h1>
+                    <span class="text-xs text-gray-400 tracking-widest uppercase">Orchestrator v2.5</span>
+                </div>
+            </div>
+
+            <!-- Connection Status, Settings & Language -->
+            <div class="flex items-center gap-3">
+                <div id="connectionStatus" class="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-yellow-500/10 text-yellow-500 border border-yellow-500/20">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-yellow-500"></span>
+                    </span>
+                    <span id="statusText">بيانات تجريبية</span>
+                </div>
+                
+                <!-- Language Toggle Button -->
+                <button onclick="toggleLanguage()" class="bg-gray-800 hover:bg-gray-700 text-white px-3 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 border border-gray-700 transition-all shadow-lg">
+                    <i class="fas fa-globe text-blue-500"></i>
+                    <span id="langBtnText">EN</span>
+                </button>
+
+                <button onclick="openSettings()" class="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 border border-gray-700 transition-all shadow-lg">
+                    <i class="fas fa-cog"></i>
+                    <span class="lang-text" data-ar="إعدادات" data-en="Settings">إعدادات</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="max-w-7xl mx-auto px-6 py-8 flex-grow w-full">
+        
+        <!-- Dashboard Statistics Cards -->
+        <section class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="glass-panel p-5 rounded-2xl flex justify-between items-center card-hover">
+                <div>
+                    <h3 class="text-sm font-medium text-gray-400 mb-2 lang-text" data-ar="إجمالي الفنادق المكتشفة" data-en="Total Hotels Found">إجمالي الفنادق المكتشفة</h3>
+                    <div class="flex items-baseline gap-2">
+                        <span id="statTotalHotels" class="text-3xl font-extrabold text-white">-</span>
+                        <span class="text-xs text-green-400"><i class="fas fa-arrow-up"></i> <span class="lang-text" data-ar="مباشر" data-en="Live">مباشر</span></span>
+                    </div>
+                </div>
+                <div class="text-gray-600/30 text-5xl"><i class="fas fa-hotel"></i></div>
+            </div>
+            
+            <div class="glass-panel p-5 rounded-2xl flex justify-between items-center card-hover">
+                <div>
+                    <h3 class="text-sm font-medium text-gray-400 mb-2 lang-text" data-ar="متوسط الأسعار" data-en="Average Price">متوسط الأسعار</h3>
+                    <div class="flex items-baseline gap-2">
+                        <span id="statAvgPrice" class="text-3xl font-extrabold text-blue-400">-</span>
+                        <span class="text-xs text-gray-400 lang-text" data-ar="دولار" data-en="USD">دولار</span>
+                    </div>
+                </div>
+                <div class="text-gray-600/30 text-5xl"><i class="fas fa-dollar-sign"></i></div>
+            </div>
+            
+            <div class="glass-panel p-5 rounded-2xl flex justify-between items-center card-hover">
+                <div>
+                    <h3 class="text-sm font-medium text-gray-400 mb-2 lang-text" data-ar="أرخص سعر معروض" data-en="Cheapest Price">أرخص سعر معروض</h3>
+                    <div class="flex items-baseline gap-2">
+                        <span id="statCheapest" class="text-3xl font-extrabold text-green-400">-</span>
+                        <span class="text-xs text-gray-400 lang-text" data-ar="دولار" data-en="USD">دولار</span>
+                    </div>
+                </div>
+                <div class="text-gray-600/30 text-5xl"><i class="fas fa-tags"></i></div>
+            </div>
+            
+            <div class="glass-panel p-5 rounded-2xl flex justify-between items-center card-hover">
+                <div>
+                    <h3 class="text-sm font-medium text-gray-400 mb-2 lang-text" data-ar="متوسط التقييم بالنجوم" data-en="Average Stars">متوسط التقييم بالنجوم</h3>
+                    <div class="flex items-baseline gap-2">
+                        <span id="statAvgStars" class="text-3xl font-extrabold text-yellow-400">-</span>
+                        <span class="text-xs text-yellow-500"><i class="fas fa-star"></i></span>
+                    </div>
+                </div>
+                <div class="text-gray-600/30 text-5xl"><i class="fas fa-star"></i></div>
+            </div>
+        </section>
+
+        <!-- Filters & Quick Controls Panel -->
+        <section class="glass-panel p-6 rounded-2xl mb-8">
+            <div class="flex flex-col lg:flex-row gap-6 justify-between items-start lg:items-start">
+                <!-- Tabs / Factors -->
+                <div class="flex flex-wrap gap-2 w-full lg:w-auto">
+                    <button onclick="setFilterFactor('cheapest')" id="tab_cheapest" class="px-5 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2 iteru-blue-bg text-white shadow-lg">
+                        <i class="fas fa-arrow-down-short-wide"></i>
+                        <span class="lang-text" data-ar="أفضل 10 فنادق (الأرخص سعراً)" data-en="Top 10 Hotels (Cheapest)">أفضل 10 فنادق (الأرخص سعراً)</span>
+                    </button>
+                    <button onclick="setFilterFactor('highest_rated')" id="tab_highest_rated" class="px-5 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2 bg-gray-800 text-gray-400 hover:text-white">
+                        <i class="fas fa-star-half-alt"></i>
+                        <span class="lang-text" data-ar="أفضل 10 فنادق (الأعلى تقييماً)" data-en="Top 10 Hotels (Highest Rated)">أفضل 10 فنادق (الأعلى تقييماً)</span>
+                    </button>
+                    <button onclick="setFilterFactor('all')" id="tab_all" class="px-5 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2 bg-gray-800 text-gray-400 hover:text-white">
+                        <i class="fas fa-list"></i>
+                        <span class="lang-text" data-ar="عرض جميع النتائج المتاحة" data-en="Show All Results">عرض جميع النتائج المتاحة</span>
+                    </button>
+                    
+                    <!-- زر وضع المقارنة -->
+                    <button onclick="toggleComparisonMode()" id="tab_compare" class="px-5 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white shadow-lg border border-purple-500">
+                        <i class="fas fa-balance-scale"></i>
+                        <span class="lang-text" data-ar="مقارنة الأسعار الذكية" data-en="Smart Price Compare">مقارنة الأسعار الذكية</span>
+                    </button>
+
+                    <!-- زر الخريطة التفاعلية -->
+                    <button onclick="toggleMapMode()" id="tab_map" class="px-5 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2 bg-blue-800 hover:bg-blue-700 text-white shadow-lg border border-blue-500">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <span class="lang-text" data-ar="الخريطة التفاعلية" data-en="Interactive Map">الخريطة التفاعلية</span>
+                    </button>
+                </div>
+
+                <!-- Action Buttons: Refresh & Delete (العامود المنفصل) -->
+                <div class="flex flex-col gap-2 w-full lg:w-auto min-w-[240px]">
+                    <!-- زر التحديث (الأساسي في الأعلى) -->
+                    <button onclick="fetchData()" class="w-full bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-lg transition-all">
+                        <i class="fas fa-sync-alt animate-spin-slow"></i>
+                        <span class="lang-text" data-ar="تحديث فوري للبيانات" data-en="Live Data Refresh">تحديث فوري للبيانات</span>
+                    </button>
+                    
+                    <!-- أزرار الحذف -->
+                    <div class="flex gap-2 w-full">
+                        <!-- زر تفريغ الشيت -->
+                        <button onclick="showDeleteModal('all')" class="flex-1 bg-red-900/60 hover:bg-red-800 border border-red-700/50 text-red-200 px-3 py-2 rounded-xl font-bold text-[11px] flex items-center justify-center gap-1 shadow transition-all">
+                            <i class="fas fa-dumpster-fire"></i> <span class="lang-text" data-ar="تفريغ الشيت" data-en="Clear Sheet">تفريغ الشيت</span>
+                        </button>
+                        <!-- زر تفعيل وضع التحديد -->
+                        <button onclick="toggleSelectionMode()" id="btnToggleSelection" class="flex-1 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-white px-3 py-2 rounded-xl font-bold text-[11px] flex items-center justify-center gap-1 shadow transition-all">
+                            <i class="fas fa-check-square"></i> <span id="toggleSelectionText" class="lang-text" data-ar="تحديد للحذف" data-en="Select Items">تحديد للحذف</span>
+                        </button>
+                    </div>
+                    <!-- زر الحذف الفعلي (يظهر فقط إذا تم تحديد عناصر) -->
+                    <button onclick="showDeleteModal('selected')" id="btnDeleteSelected" class="hidden w-full bg-red-600 hover:bg-red-500 text-white px-3 py-2 rounded-xl font-bold text-[11px] flex items-center justify-center gap-2 shadow transition-all mt-1">
+                        <i class="fas fa-trash-alt"></i> <span class="lang-text" data-ar="حذف العناصر المحددة" data-en="Delete Selected Items">حذف العناصر المحددة</span> (<span id="selectedCount">0</span>)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Detailed Search Filters -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6 pt-6 border-t border-gray-800">
+                
+                <!-- Filter Source -->
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1.5 font-semibold lang-text" data-ar="تصفية حسب المصدر" data-en="Filter by Source">تصفية حسب المصدر</label>
+                    <select id="filterSource" onchange="applyFiltersAndRender()" class="w-full bg-gray-900 border border-gray-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-blue-500 transition-all cursor-pointer" style="background-color: #12131a; color: #ffffff;">
+                        <option value="all" style="background-color: #191b24; color: #ffffff;">All Sources</option>
+                    </select>
+                </div>
+
+                <!-- Filter Search -->
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1.5 font-semibold lang-text" data-ar="ابحث عن فندق محدد بالاسم" data-en="Search by Hotel Name">ابحث عن فندق محدد بالاسم</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 ltr-adjust-icon">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" id="filterSearch" oninput="applyFiltersAndRender()" class="w-full bg-black border border-gray-800 rounded-xl py-2.5 pr-10 pl-4 text-sm text-white focus:outline-none focus:border-blue-500 transition-all lang-placeholder ltr-adjust-input" placeholder="أدخل اسم الفندق هنا..." data-placeholder-ar="أدخل اسم الفندق هنا..." data-placeholder-en="Enter hotel name here...">
+                    </div>
+                </div>
+
+                <!-- Filter Stars -->
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1.5 font-semibold lang-text" data-ar="تصفية حسب عدد النجوم" data-en="Filter by Star Rating">تصفية حسب عدد النجوم</label>
+                    <select id="filterStars" onchange="applyFiltersAndRender()" class="w-full bg-gray-900 border border-gray-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-blue-500 transition-all cursor-pointer" style="background-color: #12131a; color: #ffffff;">
+                        <option value="all" class="lang-text" data-ar="جميع مستويات النجوم" data-en="All Star Ratings" style="background-color: #191b24; color: #ffffff;">جميع مستويات النجوم</option>
+                        <option value="5" class="lang-text" data-ar="5 نجوم" data-en="5 Stars" style="background-color: #191b24; color: #ffffff;">5 نجوم</option>
+                        <option value="4" class="lang-text" data-ar="4 نجوم" data-en="4 Stars" style="background-color: #191b24; color: #ffffff;">4 نجوم</option>
+                        <option value="3" class="lang-text" data-ar="3 نجوم" data-en="3 Stars" style="background-color: #191b24; color: #ffffff;">3 نجوم</option>
+                        <option value="2" class="lang-text" data-ar="2 نجمة" data-en="2 Stars" style="background-color: #191b24; color: #ffffff;">2 نجمة</option>
+                        <option value="1" class="lang-text" data-ar="1 نجمة" data-en="1 Star" style="background-color: #191b24; color: #ffffff;">1 نجمة</option>
+                    </select>
+                </div>
+
+                <!-- Filter Max Price -->
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1.5 font-semibold">
+                        <span class="lang-text" data-ar="الحد الأقصى للسعر" data-en="Max Price Limit">الحد الأقصى للسعر</span> 
+                        (<span id="priceVal">أقصى حد</span>)
+                    </label>
+                    <input type="range" id="filterPrice" oninput="updatePriceSlider(this.value)" class="w-full h-2 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-blue-500 mt-3">
+                </div>
+
+                <!-- Row 2: Filter POI (منطقة البحث المستهدفة - موسعة وأسفل فلتر المصدر مباشرة) -->
+                <div class="lg:col-span-2 bg-gray-900/80 border border-purple-500/40 p-3.5 rounded-2xl relative shadow-lg">
+                    <label class="block text-xs text-purple-300 mb-2 font-semibold flex items-center justify-between">
+                        <span class="flex items-center gap-2">
+                            <i class="fas fa-location-crosshairs text-purple-400"></i>
+                            <span class="lang-text font-bold" data-ar="تصفية حسب منطقة البحث (POI)" data-en="Filter by Search Area (POI)">تصفية حسب منطقة البحث (POI)</span>
+                        </span>
+                        <span id="poiCountBadge" class="text-[10px] bg-purple-900/60 text-purple-200 border border-purple-700/60 px-2.5 py-0.5 rounded-full font-bold">0 مناطق مكتشفة</span>
+                    </label>
+                    <select id="filterPOI" onchange="onPoiChange()" class="w-full bg-gray-900 border border-purple-500/50 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-purple-400 focus:ring-1 focus:ring-purple-400 transition-all cursor-pointer shadow-md" style="background-color: #12131a; color: #ffffff;">
+                        <option value="all" class="lang-text" data-ar="جميع المناطق المكتشفة (All POIs)" data-en="All Discovered Areas (All POIs)" style="background-color: #191b24; color: #ffffff;">جميع المناطق المكتشفة (All POIs)</option>
+                    </select>
+                </div>
+
+                <!-- Row 2: Active POI Tag & Reset Filters -->
+                <div class="lg:col-span-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3.5 bg-gray-900/40 border border-gray-800/80 rounded-2xl">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs text-gray-400 font-semibold lang-text" data-ar="الحالة:" data-en="Status:">الحالة:</span>
+                        <span id="activePoiIndicator" class="text-xs px-2.5 py-1 rounded-lg bg-gray-800 text-gray-300 border border-gray-700">
+                            <span class="lang-text" data-ar="عرض كافة المناطق" data-en="Displaying All Areas">عرض كافة المناطق</span>
+                        </span>
+                    </div>
+                    <button onclick="resetAllFilters()" class="w-full sm:w-auto bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition-all border border-gray-700 flex items-center justify-center gap-2 shadow">
+                        <i class="fas fa-undo-alt text-yellow-500"></i>
+                        <span class="lang-text" data-ar="إعادة ضبط الفلاتر" data-en="Reset Filters">إعادة ضبط الفلاتر</span>
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Hotels Cards Grid -->
+        <section id="normalViewSection">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                <h2 class="text-xl font-bold flex items-center gap-2">
+                    <span class="w-2 h-6 bg-blue-500 rounded-full"></span>
+                    <span id="gridTitle">النتائج المعروضة</span>
+                    <span id="resultsCount" class="text-xs bg-gray-800 text-gray-400 px-2.5 py-1 rounded-full font-medium">0 فنادق</span>
+                </h2>
+                <!-- أزرار التحديد السريع (تظهر في وضع التحديد فقط) -->
+                <div id="selectionActions" class="hidden flex gap-2">
+                    <button onclick="selectAllVisible()" class="bg-blue-600/20 hover:bg-blue-600 border border-blue-500 text-blue-300 hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow">
+                        <i class="fas fa-check-double"></i> <span class="lang-text" data-ar="تحديد الكل الظاهر" data-en="Select All Visible">تحديد الكل الظاهر</span>
+                    </button>
+                    <button onclick="unselectAll()" class="bg-gray-800 hover:bg-gray-700 border border-gray-600 text-gray-300 px-4 py-2 rounded-xl text-xs font-bold transition-all shadow">
+                        <i class="fas fa-eraser"></i> <span class="lang-text" data-ar="إلغاء التحديد" data-en="Unselect All">إلغاء التحديد</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Cards Container -->
+            <div id="hotelsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamic cards rendered via JS -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="hidden glass-panel p-16 rounded-2xl text-center">
+                <div class="text-6xl text-gray-700 mb-4"><i class="fas fa-search-minus"></i></div>
+                <h3 class="text-lg font-bold text-white mb-2 lang-text" data-ar="عذراً، لم نجد أي نتائج متطابقة!" data-en="Sorry, no matching results found!">عذراً، لم نجد أي نتائج متطابقة!</h3>
+                <p class="text-sm text-gray-400 lang-text" data-ar="حاول تغيير خيارات البحث أو الفلاتر أعلاه." data-en="Try changing your search or filters above.">حاول تغيير خيارات البحث أو الفلاتر أعلاه.</p>
+            </div>
+        </section>
+
+        <!-- قسم المقارنة الذكية -->
+        <section id="comparisonSection" class="hidden mt-8 border-t border-purple-900/50 pt-8">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                <h2 class="text-xl font-bold flex items-center gap-2 text-purple-400">
+                    <i class="fas fa-layer-group"></i>
+                    <span class="lang-text" data-ar="لوحة مقارنة الأسعار" data-en="Price Comparison Board">لوحة مقارنة الأسعار</span>
+                </h2>
+                
+                <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                    <!-- إعداد عرض النتائج المتطابقة أولاً (Show Matching First) -->
+                    <label class="flex items-center gap-2 bg-gray-800 border border-purple-500/50 hover:border-purple-400 rounded-xl px-3.5 py-2 text-sm text-white cursor-pointer select-none transition-all shadow-lg whitespace-nowrap">
+                        <input type="checkbox" id="showMatchingFirstToggle" checked onchange="toggleShowMatchingFirst(this.checked)" class="w-4 h-4 accent-purple-600 rounded cursor-pointer">
+                        <i class="fas fa-check-double text-purple-400 text-xs"></i>
+                        <span class="lang-text" data-ar="عرض المتطابقة أولاً" data-en="Show Matching First">عرض المتطابقة أولاً</span>
+                    </label>
+
+                    <select id="compareSortSelect" onchange="changeCompareSort(this.value)" class="bg-gray-800 border border-purple-500/50 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-purple-500 transition-all shadow-lg cursor-pointer">
+                        <option value="price" class="lang-text" data-ar="ترتيب حسب: الأرخص سعراً" data-en="Sort by: Cheapest">ترتيب حسب: الأرخص سعراً</option>
+                        <option value="poi" class="lang-text" data-ar="ترتيب حسب: الأقرب للـ POI" data-en="Sort by: Closest to POI">ترتيب حسب: الأقرب للـ POI</option>
+                        <option value="city" class="lang-text" data-ar="ترتيب حسب: الأقرب لمركز المدينة" data-en="Sort by: Closest to City Center">ترتيب حسب: الأقرب لمركز المدينة</option>
+                    </select>
+
+                    <button onclick="toggleComparisonMode()" class="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-xl text-sm flex items-center gap-2 shadow-lg whitespace-nowrap border border-gray-700">
+                        <i class="fas fa-arrow-right"></i> <span class="lang-text" data-ar="العودة" data-en="Back">العودة</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="comparisonGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- JavaScript comparisons -->
+            </div>
+        </section>
+
+        <!-- قسم الخريطة التفاعلية -->
+        <section id="mapSection" class="hidden mt-8 border-t border-blue-900/50 pt-8">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                <h2 class="text-xl font-bold flex items-center gap-2 text-blue-400">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <span class="lang-text" data-ar="خريطة الفنادق التفاعلية" data-en="Interactive Hotel Map">خريطة الفنادق التفاعلية</span>
+                </h2>
+                
+                <div class="flex items-center gap-3 w-full md:w-auto">
+                    <select id="mapSortSelect" onchange="changeMapSort(this.value)" class="bg-gray-800 border border-blue-500/50 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-all shadow-lg cursor-pointer w-full md:w-auto">
+                        <option value="cheapest" class="lang-text" data-ar="ترتيب حسب: الأرخص سعراً" data-en="Sort by: Cheapest">ترتيب حسب: الأرخص سعراً</option>
+                        <option value="poi" class="lang-text" data-ar="ترتيب حسب: الأقرب للـ POI" data-en="Sort by: Closest to POI">ترتيب حسب: الأقرب للـ POI</option>
+                        <option value="city" class="lang-text" data-ar="ترتيب حسب: الأقرب لمركز المدينة" data-en="Sort by: Closest to City Center">ترتيب حسب: الأقرب لمركز المدينة</option>
+                    </select>
+
+                    <button onclick="toggleMapMode()" class="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-xl text-sm flex items-center gap-2 shadow-lg whitespace-nowrap border border-gray-700">
+                        <i class="fas fa-arrow-right"></i> <span class="lang-text" data-ar="العودة" data-en="Back">العودة</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6" style="height: 650px; min-height: 650px; max-height: 650px;">
+                <div id="mapSidebar" class="lg:col-span-1 space-y-3 overflow-y-auto custom-scrollbar pr-2" style="height: 100%;">
+                    <!-- Dynamic map list items -->
+                </div>
+                <div id="googleMap" class="lg:col-span-2 rounded-2xl overflow-hidden border border-gray-800" style="height: 100%;">
+                    <!-- Google Map container -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Details Modal -->
+    <div id="detailsModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden px-4">
+        <div class="glass-panel w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl border border-gray-800 animate-fade-in">
+            <!-- Modal Header -->
+            <div class="bg-gray-900 px-6 py-4 flex justify-between items-center border-b border-gray-800">
+                <h3 class="font-bold text-lg text-white flex items-center gap-2">
+                    <i class="fas fa-hotel text-blue-500"></i>
+                    <span id="modalHotelName"></span>
+                </h3>
+                <button onclick="closeDetailsModal()" class="text-gray-400 hover:text-white transition-colors text-lg">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <!-- Modal Body -->
+            <div class="p-6 space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                     <div class="bg-gray-800/50 p-3 rounded-xl border border-gray-700">
+                         <span class="block text-[10px] text-gray-400 mb-1 lang-text" data-ar="المصدر" data-en="Source">المصدر</span>
+                         <span class="font-bold text-sm text-blue-400" id="modalSource"></span>
+                     </div>
+                     <div class="bg-gray-800/50 p-3 rounded-xl border border-gray-700">
+                         <span class="block text-[10px] text-gray-400 mb-1 lang-text" data-ar="السعر المقدر" data-en="Estimated Price">السعر المقدر</span>
+                         <span class="font-extrabold text-sm text-green-400" id="modalPrice"></span>
+                     </div>
+                </div>
+
+                <div class="bg-gray-800/50 p-3 rounded-xl border border-gray-700">
+                     <span class="block text-[10px] text-gray-400 mb-1 lang-text" data-ar="منطقة البحث (POI)" data-en="Search Area (POI)">منطقة البحث (POI)</span>
+                     <p class="text-sm font-semibold text-purple-300" id="modalPOI"></p>
+                </div>
+                
+                <div class="bg-gray-800/50 p-3 rounded-xl border border-gray-700">
+                     <span class="block text-[10px] text-gray-400 mb-1 lang-text" data-ar="العنوان التفصيلي" data-en="Detailed Address">العنوان التفصيلي</span>
+                     <p class="text-sm text-gray-200 leading-relaxed" id="modalAddress"></p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                     <div class="bg-gray-800/50 p-3 rounded-xl border border-gray-700">
+                         <span class="block text-[10px] text-gray-400 mb-1"><i class="fas fa-location-crosshairs text-purple-400"></i> <span class="lang-text" data-ar="البعد عن الموقع (POI)" data-en="Distance to POI">البعد عن الموقع (POI)</span></span>
+                         <span class="font-bold text-xs text-gray-200" id="modalDistancePOI"></span>
+                     </div>
+                     <div class="bg-gray-800/50 p-3 rounded-xl border border-gray-700">
+                         <span class="block text-[10px] text-gray-400 mb-1"><i class="fas fa-city text-pink-400"></i> <span class="lang-text" data-ar="البعد عن المدينة" data-en="Distance to City">البعد عن المدينة</span></span>
+                         <span class="font-bold text-xs text-gray-200" id="modalDistanceCity"></span>
+                     </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                     <div class="bg-gray-800/50 p-3 rounded-xl border border-gray-700">
+                         <span class="block text-[10px] text-gray-400 mb-1"><i class="fas fa-star text-yellow-500"></i> <span class="lang-text" data-ar="تصنيف النجوم" data-en="Star Rating">تصنيف النجوم</span></span>
+                         <div id="modalStars" class="text-sm"></div>
+                     </div>
+                     <div class="bg-gray-800/50 p-3 rounded-xl border border-gray-700">
+                         <span class="block text-[10px] text-gray-400 mb-1"><i class="fab fa-google text-green-500"></i> <span class="lang-text" data-ar="تقييم جوجل" data-en="Google Rating">تقييم جوجل</span></span>
+                         <span class="font-bold text-sm text-gray-200" id="modalGoogleRating"></span>
+                     </div>
+                </div>
+                
+                <div class="text-right text-[10px] text-gray-500 mt-2">
+                    <i class="fas fa-clock"></i> <span class="lang-text" data-ar="تاريخ التحديث:" data-en="Last Update:">تاريخ التحديث:</span> <span id="modalTimestamp"></span>
+                </div>
+            </div>
+            <!-- Modal Footer -->
+            <div class="bg-gray-900 px-6 py-4 border-t border-gray-800 flex justify-between items-center gap-3 w-full">
+                <a href="#" id="modalBookBtn" target="_blank" class="bg-green-600 hover:bg-green-500 text-white px-6 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg flex items-center gap-2">
+                    <i class="fas fa-calendar-check"></i>
+                    <span class="lang-text" data-ar="احجز الآن" data-en="Book Now">احجز الآن</span>
+                </a>
+                <button type="button" onclick="closeDetailsModal()" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-8 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg lang-text" data-ar="إغلاق والتراجع" data-en="Close & Return">
+                    إغلاق والتراجع
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden px-4">
+        <div class="glass-panel w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl border border-gray-800 animate-fade-in">
+            <!-- Modal Header -->
+            <div class="bg-gray-900 px-6 py-4 flex justify-between items-center border-b border-gray-800">
+                <h3 class="font-bold text-lg text-white flex items-center gap-2">
+                    <i class="fas fa-network-wired text-blue-500"></i>
+                    <span class="lang-text" data-ar="ربط نظام n8n بمستند Google Sheet" data-en="Connect n8n to Google Sheet">ربط نظام n8n بمستند Google Sheet</span>
+                </h3>
+                <button onclick="closeSettings()" class="text-gray-400 hover:text-white transition-colors text-lg">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <!-- Modal Body -->
+            <div class="p-6 space-y-4">
+                <p class="text-xs text-gray-400 leading-relaxed lang-text" data-ar="من أجل سحب البيانات المباشرة التي يقوم نظام الـ n8n بترحيلها (Append Row) إلى ملف الـ Google Sheets، يرجى وضع رابط الـ Webhook (GET) الذي تم إنشاؤه في n8n أدناه:" data-en="To fetch live data appended by n8n into your Google Sheets, please provide the n8n Webhook (GET) URL below:">
+                    من أجل سحب البيانات المباشرة التي يقوم نظام الـ n8n بترحيلها (Append Row) إلى ملف الـ Google Sheets، يرجى وضع رابط الـ Webhook (GET) الذي تم إنشاؤه في n8n أدناه:
+                </p>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-2 lang-text" data-ar="رابط الـ Webhook URL من الـ n8n" data-en="n8n Webhook URL">رابط الـ Webhook URL من الـ n8n</label>
+                    <input type="url" id="n8nWebhookUrl" class="w-full bg-black border border-gray-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-blue-500 tracking-wider lang-placeholder" placeholder="https://primary-production.up.railway.app/webhook/..." data-placeholder-ar="https://primary-production.up.railway.app/webhook/..." data-placeholder-en="https://primary-production.up.railway.app/webhook/...">
+                </div>
+            </div>
+            <!-- Modal Footer -->
+            <div class="bg-gray-900 px-6 py-4 border-t border-gray-800 flex justify-end gap-3">
+                <button onclick="closeSettings()" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-5 py-2.5 rounded-xl font-bold text-sm transition-all lang-text" data-ar="إلغاء" data-en="Cancel">
+                    إلغاء
+                </button>
+                <button onclick="saveSettings()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition-all lang-text" data-ar="حفظ وإعادة تحميل البيانات" data-en="Save & Reload Data">
+                    حفظ وإعادة تحميل البيانات
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden px-4">
+        <div class="glass-panel w-full max-w-sm rounded-2xl overflow-hidden shadow-2xl border border-red-900/50 animate-fade-in text-center p-6">
+            <div class="text-6xl text-red-500 mb-4"><i class="fas fa-exclamation-triangle animate-pulse"></i></div>
+            <h3 class="font-bold text-xl text-white mb-2 lang-text" data-ar="تأكيد الحذف" data-en="Confirm Deletion" id="deleteModalTitle">تأكيد الحذف</h3>
+            <p class="text-sm text-gray-300 mb-6" id="deleteModalMsg">هل أنت متأكد؟</p>
+            
+            <div class="flex justify-center gap-3 w-full">
+                <button onclick="closeDeleteModal()" class="w-1/2 bg-gray-800 hover:bg-gray-700 text-gray-300 py-2.5 rounded-xl font-bold text-sm transition-all lang-text" data-ar="تراجع" data-en="Cancel">تراجع</button>
+                <button id="confirmDeleteBtn" onclick="executeDelete()" class="w-1/2 bg-red-600 hover:bg-red-500 text-white py-2.5 rounded-xl font-bold text-sm transition-all shadow-[0_0_15px_rgba(220,38,38,0.5)] lang-text" data-ar="نعم، قم الحذف" data-en="Yes, Delete">نعم، قم الحذف</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-black/40 border-t border-gray-900 py-6 px-6 mt-12 text-center text-xs text-gray-500">
+        <p class="lang-text" data-ar="&copy; 2026 ITERU Intelligence Inc. جميع الحقوق محفوظة لتطبيق Orchestrator." data-en="&copy; 2026 ITERU Intelligence Inc. All rights reserved for Orchestrator.">&copy; 2026 ITERU Intelligence Inc. جميع الحقوق محفوظة لتطبيق Orchestrator.</p>
+    </footer>
+
+    <!-- JS Logic for Filtering, Translation, POI & n8n Integration -->
+    <script>
+        // Language Toggle Dictionary for Dynamic Content
+        const dict = {
+            ar: {
+                night: "للغرفة / ليلة",
+                starsTxt: "نجوم",
+                bookNow: "احجز الآن",
+                details: "التفاصيل",
+                mapBtn: "الخريطة",
+                results: "نتائج",
+                titleCheapest: "أفضل 10 عروض (الأرخص سعراً)",
+                titleHighest: "أفضل 10 فنادق (الأعلى تقييماً)",
+                titleAll: "جميع الفنادق والنتائج المكتشفة",
+                statusTesting: "بيانات تجريبية (غير متصل)",
+                statusFetching: "جاري جلب البيانات...",
+                statusSuccess: "متصل بمستند Google Sheets",
+                statusFail: "فشل الاتصال: تم استخدام بيانات محلية",
+                alertName: "اسم الفندق",
+                alertRate: "التقييم",
+                alertPrice: "السعر المقدر",
+                alertAddress: "العنوان",
+                alertLink: "رابط الحجز",
+                deleteAll: "تفريغ الشيت",
+                deleteSelected: "حذف المحدد",
+                confirmTitle: "تأكيد الحذف",
+                confirmMsgAll: "هل أنت متأكد من مسح كافة البيانات من الشيت؟ (ستبقى عناوين الأعمدة في السطر الأول بأمان)",
+                confirmMsgSelected: "هل أنت متأكد من حذف الفنادق المحددة من الشيت نهائياً؟",
+                cancel: "تراجع",
+                confirm: "نعم، قم الحذف",
+                deleting: "جاري الحذف...",
+                cheapestSite: "الأرخص",
+                approxCompareBtn: "بحث عن منافسين (مقارنة تقريبية)",
+                approxMatchTag: "منافس محتمل",
+                allPOIs: "جميع المناطق المكتشفة (All POIs)",
+                poiCountSuffix: "مناطق مكتشفة",
+                allAreasStatus: "عرض كافة المناطق",
+                activeAreaPrefix: "المنطقة المحددة: ",
+                showMatchingFirst: "عرض المتطابقة أولاً",
+                bookCheapest: "احجز الأرخص"
+            },
+            en: {
+                night: "Per room / night",
+                starsTxt: "Stars",
+                bookNow: "Book Now",
+                details: "Details",
+                mapBtn: "Map",
+                results: "Results",
+                titleCheapest: "Top 10 Offers (Cheapest)",
+                titleHighest: "Top 10 Hotels (Highest Rated)",
+                titleAll: "All Discovered Hotels",
+                statusTesting: "Demo Data (Not Connected)",
+                statusFetching: "Fetching Data...",
+                statusSuccess: "Connected to Google Sheets",
+                statusFail: "Connection Failed: Local Data Used",
+                alertName: "Hotel Name",
+                alertRate: "Rating",
+                alertPrice: "Estimated Price",
+                alertAddress: "Address",
+                alertLink: "Booking Link",
+                deleteAll: "Clear Sheet",
+                deleteSelected: "Delete Selected",
+                confirmTitle: "Confirm Deletion",
+                confirmMsgAll: "Are you sure you want to clear all data? (Headers in row 1 will be kept safe)",
+                confirmMsgSelected: "Are you sure you want to permanently delete the selected hotels?",
+                cancel: "Cancel",
+                confirm: "Yes, Delete",
+                deleting: "Deleting...",
+                cheapestSite: "Cheapest",
+                approxCompareBtn: "Find Competitors (Approx)",
+                approxMatchTag: "Potential Competitor",
+                allPOIs: "All Discovered Areas (All POIs)",
+                poiCountSuffix: "discovered areas",
+                allAreasStatus: "Displaying All Areas",
+                activeAreaPrefix: "Active Area: ",
+                showMatchingFirst: "Show Matching First",
+                bookCheapest: "Book Cheapest"
+            }
+        };
+
+        let mapSortValue = "cheapest";
+        let currentLang = 'ar';
+        let currentStatusKey = 'statusTesting';
+
+        // --- بداية كود الحذف الذكي ---
+        let selectedRows = [];
+        let pendingDeleteAction = null;
+        let isSelectionModeActive = false;
+
+        function toggleSelectionMode() {
+            isSelectionModeActive = !isSelectionModeActive;
+            const toggleBtn = document.getElementById('btnToggleSelection');
+            const toggleText = document.getElementById('toggleSelectionText');
+            const selectionActions = document.getElementById('selectionActions');
+            const icon = toggleBtn.querySelector('i');
+            
+            if (isSelectionModeActive) {
+                toggleBtn.classList.replace('bg-gray-800', 'bg-blue-600');
+                toggleBtn.classList.replace('hover:bg-gray-700', 'hover:bg-blue-700');
+                toggleBtn.classList.replace('border-gray-600', 'border-blue-500');
+                icon.className = 'fas fa-times';
+                toggleText.setAttribute('data-ar', 'إغلاق التحديد');
+                toggleText.setAttribute('data-en', 'Close Selection');
+                toggleText.textContent = currentLang === 'ar' ? 'إغلاق التحديد' : 'Close Selection';
+                
+                selectionActions.classList.remove('hidden');
+                document.querySelectorAll('.selection-checkbox-container').forEach(el => el.classList.remove('hidden'));
+            } else {
+                toggleBtn.classList.replace('bg-blue-600', 'bg-gray-800');
+                toggleBtn.classList.replace('hover:bg-blue-700', 'hover:bg-gray-700');
+                toggleBtn.classList.replace('border-blue-500', 'border-gray-600');
+                icon.className = 'fas fa-check-square';
+                toggleText.setAttribute('data-ar', 'تحديد للحذف');
+                toggleText.setAttribute('data-en', 'Select Items');
+                toggleText.textContent = currentLang === 'ar' ? 'تحديد للحذف' : 'Select Items';
+                
+                selectionActions.classList.add('hidden');
+                document.querySelectorAll('.selection-checkbox-container').forEach(el => el.classList.add('hidden'));
+                unselectAll();
+            }
+        }
+
+        function selectAllVisible() {
+            if (!window.currentDisplayedHotels) return;
+            window.currentDisplayedHotels.forEach(hotel => {
+                if (hotel.rowNum && !selectedRows.includes(String(hotel.rowNum))) {
+                    selectedRows.push(String(hotel.rowNum));
+                }
+            });
+            updateSelectionUI();
+        }
+
+        function unselectAll() {
+            selectedRows = [];
+            updateSelectionUI();
+        }
+
+        function updateSelectionUI() {
+            const btn = document.getElementById('btnDeleteSelected');
+            const count = document.getElementById('selectedCount');
+            
+            document.querySelectorAll('.hotel-checkbox').forEach(cb => {
+                cb.checked = selectedRows.includes(cb.value);
+            });
+
+            if (selectedRows.length > 0) {
+                btn.classList.remove('hidden');
+                count.textContent = selectedRows.length;
+            } else {
+                btn.classList.add('hidden');
+            }
+        }
+
+        function toggleRowSelection(rowNum, isChecked) {
+            if (isChecked && !selectedRows.includes(String(rowNum))) {
+                selectedRows.push(String(rowNum));
+            } else if (!isChecked) {
+                selectedRows = selectedRows.filter(r => r !== String(rowNum));
+            }
+            updateSelectionUI();
+        }
+
+        function showDeleteModal(type) {
+            pendingDeleteAction = type;
+            document.getElementById('deleteModal').classList.remove('hidden');
+            const msgEl = document.getElementById('deleteModalMsg');
+            msgEl.textContent = type === 'all' ? dict[currentLang].confirmMsgAll : dict[currentLang].confirmMsgSelected;
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.add('hidden');
+            pendingDeleteAction = null;
+        }
+
+        async function executeDelete() {
+            const btn = document.getElementById('confirmDeleteBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${dict[currentLang].deleting}`;
+            btn.disabled = true;
+
+            const url = document.getElementById('n8nWebhookUrl').value.trim();
+            const payload = {
+                action: pendingDeleteAction === 'all' ? 'clear_all' : 'delete_specific',
+                rows: selectedRows
+            };
+
+            try {
+                await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                
+                selectedRows = [];
+                updateSelectionUI();
+                if(isSelectionModeActive) toggleSelectionMode();
+                closeDeleteModal();
+                fetchData();
+            } catch (err) {
+                console.error("Delete failed:", err);
+                alert("حدث خطأ أثناء الاتصال بمسار n8n");
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+        // --- نهاية كود الحذف الذكي ---
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            const htmlElement = document.documentElement;
+            
+            if (currentLang === 'en') {
+                htmlElement.setAttribute('dir', 'ltr');
+                htmlElement.setAttribute('lang', 'en');
+                document.getElementById('langBtnText').textContent = 'عربي';
+                
+                document.querySelectorAll('.ltr-adjust-icon').forEach(el => {
+                    el.classList.remove('right-0', 'pr-3');
+                    el.classList.add('left-0', 'pl-3');
+                });
+                document.querySelectorAll('.ltr-adjust-input').forEach(el => {
+                    el.classList.remove('pr-10', 'pl-4');
+                    el.classList.add('pl-10', 'pr-4');
+                });
+            } else {
+                htmlElement.setAttribute('dir', 'rtl');
+                htmlElement.setAttribute('lang', 'ar');
+                document.getElementById('langBtnText').textContent = 'EN';
+                
+                document.querySelectorAll('.ltr-adjust-icon').forEach(el => {
+                    el.classList.remove('left-0', 'pl-3');
+                    el.classList.add('right-0', 'pr-3');
+                });
+                document.querySelectorAll('.ltr-adjust-input').forEach(el => {
+                    el.classList.remove('pl-10', 'pr-4');
+                    el.classList.add('pr-10', 'pl-4');
+                });
+            }
+            
+            // ترجمة النصوص الثابتة
+            document.querySelectorAll('.lang-text').forEach(el => {
+                if(el.getAttribute(`data-${currentLang}`)) {
+                    el.textContent = el.getAttribute(`data-${currentLang}`);
+                }
+            });
+
+            // ترجمة حقول الإدخال
+            document.querySelectorAll('.lang-placeholder').forEach(el => {
+                if(el.getAttribute(`data-placeholder-${currentLang}`)) {
+                    el.setAttribute('placeholder', el.getAttribute(`data-placeholder-${currentLang}`));
+                }
+            });
+
+            // ترجمة شارة الاتصال
+            document.getElementById('statusText').textContent = dict[currentLang][currentStatusKey];
+
+            // إعادة بناء خيارات POI والأسعار
+            populatePoiFilter();
+            
+            // تحديث بطاقة مؤشر POI
+            const poiVal = document.getElementById('filterPOI').value;
+            const indicator = document.getElementById('activePoiIndicator');
+            if (poiVal !== 'all') {
+                indicator.textContent = dict[currentLang].activeAreaPrefix + poiVal;
+            } else {
+                indicator.textContent = dict[currentLang].allAreasStatus;
+            }
+
+            if (hotelsRaw.length > 0) {
+                applyFiltersAndRender();
+            }
+        }
+
+        // بيانات تجريبية تحتوي على منطقتين (Paris Center و Grand Place, Brussels) لتوضيح عمل فلتر الـ POI
+        const demoData = [
+            {
+                timestamp: "7/19/2026",
+                source: "hoojoozat",
+                name: "Hotel Andrea",
+                price: 156.00,
+                stars: 3,
+                poi: "Paris Center",
+                address: "3 Rue Saint Bon, 75004 Paris",
+                lat: 48.8575,
+                lng: 2.3512,
+                booking_url: "https://www.hoojoozat.com/HotelDetails?id=372671",
+                image_url: "https://www.hoojoozat.com/Pictures/HotelPic/MainNew/p37_372671_main.jpg"
+            },
+            {
+                timestamp: "7/19/2026",
+                source: "eBooking Center",
+                name: "Hotel Andrea",
+                price: 132.00,
+                stars: 3,
+                poi: "Paris Center",
+                address: "3 Rue Saint Bon, 75004 Paris",
+                lat: 48.8575,
+                lng: 2.3512,
+                booking_url: "https://www.ebookingcenter.com/hotel-andrea-paris",
+                image_url: "https://www.hoojoozat.com/Pictures/HotelPic/MainNew/p37_372671_main.jpg"
+            },
+            {
+                timestamp: "7/19/2026",
+                source: "hoojoozat",
+                name: "Hotel Le Grand Mazarin",
+                price: 765.00,
+                stars: 5,
+                poi: "Paris Center",
+                address: "17 Rue De La Verrerie, 75004 Paris",
+                lat: 48.8580,
+                lng: 2.3530,
+                booking_url: "#",
+                image_url: ""
+            },
+            {
+                timestamp: "7/17/2026",
+                source: "CheapOtel",
+                name: "Grand Place Hotel Brussels",
+                price: 145.00,
+                stars: 4,
+                poi: "Grand Place, Brussels",
+                address: "Rue de la Colline 24, 1000 Bruxelles",
+                lat: 50.8467,
+                lng: 4.3525,
+                booking_url: "https://bookings.cheapotel.com/",
+                image_url: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb"
+            },
+            {
+                timestamp: "7/17/2026",
+                source: "CheapOtel",
+                name: "Quality Inn City Center",
+                price: 212.95,
+                stars: 3,
+                poi: "Grand Place, Brussels",
+                address: "Boulevard Anspach 105, 1000 Bruxelles",
+                lat: 50.8490,
+                lng: 4.3510,
+                booking_url: "https://bookings.cheapotel.com/",
+                image_url: "https://wbecdn-brfdhfbjhfxdte6.a01.azurefd.net/images/2000084405"
+            }
+        ];
+
+        let hotelsRaw = [...demoData];
+        let filterFactor = 'cheapest'; 
+        let maxPricePossible = 500;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedUrl = localStorage.getItem('n8n_webhook_url');
+            const defaultWebhookUrl = "https://dddbot.duckdns.org/webhook-test/210168f8-1329-4df1-8f6d-2fb15f1be838";
+            
+            document.getElementById('n8nWebhookUrl').value = savedUrl || defaultWebhookUrl;
+            fetchData();
+        });
+
+        // دالة ذكية لاستخراج اسم الـ POI من الشيت أو من مسافة الـ POI
+        function extractPOIName(row, distPOI) {
+            // 1. فحص الأعمدة المباشرة المحتملة في الشيت
+            const directKeys = [
+                'POI', 'poi', 'Poi', 'POI Name', 'poi name', 'POI_Name', 'poi_name',
+                'destination', 'Destination', 'area', 'Area', 'Region', 'region',
+                'Search POI', 'search poi', 'Point of Interest', 'point of interest'
+            ];
+            for (const key of directKeys) {
+                if (row[key] && typeof row[key] === 'string' && row[key].trim()) {
+                    const val = row[key].trim();
+                    if (!val.startsWith('http://') && !val.startsWith('https://') && val.toLowerCase() !== 'n/a' && val.toLowerCase() !== 'null') {
+                        return val;
+                    }
+                }
+            }
+
+            // 2. محاولة الاستخراج من خانة مسافة الـ POI (مثال: "1.2 km to Grand Place" أو "Grand Place: 1.2 km")
+            if (distPOI && typeof distPOI === 'string') {
+                const toMatch = distPOI.match(/(?:to|من)\s+(.+)$/i);
+                if (toMatch && toMatch[1].trim()) {
+                    return toMatch[1].trim();
+                }
+                if (distPOI.includes(':')) {
+                    const part = distPOI.split(':')[0].trim();
+                    if (part && isNaN(parseFloat(part))) {
+                        return part;
+                    }
+                }
+            }
+
+            return '';
+        }
+
+        async function fetchData() {
+            const url = document.getElementById('n8nWebhookUrl').value.trim();
+            const statusEl = document.getElementById('connectionStatus');
+            const statusTxt = document.getElementById('statusText');
+
+            if (!url) {
+                hotelsRaw = [...demoData];
+                currentStatusKey = 'statusTesting';
+                updateStatisticsAndRender();
+                return;
+            }
+
+            statusEl.className = "flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20";
+            currentStatusKey = 'statusFetching';
+            statusTxt.textContent = dict[currentLang][currentStatusKey];
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Failed to reach webhook');
+                const data = await response.json();
+                
+                let parsedData = Array.isArray(data) ? data : (data.data || []);
+                
+                // استخراج الفنادق وتحليل الحقول
+                let extractedHotels = parsedData.map(item => {
+                    const row = item.json || item;
+                    
+                    // 1. استخراج العنوان والتقييم من عمود "More details"
+                    let rawDetails = row['More details'] || row['more details'] || '';
+                    let parsedAddress = 'العنوان غير متوفر';
+                    let parsedRating = 'غير متوفر';
+                    
+                    if (rawDetails) {
+                        if (rawDetails.includes('|')) {
+                            let parts = rawDetails.split('|');
+                            parsedAddress = parts[0].replace(/Address:\s*/i, '').replace('العنوان:', '').trim();
+                            if (parts.length > 1) {
+                                let ratingRaw = parts[1].replace(/Google Maps User Rating:\s*/i, '').replace('التقييم:', '').trim();
+                                parsedRating = ratingRaw;
+                            }
+                        } else if (rawDetails.toLowerCase().startsWith('address:')) {
+                            parsedAddress = rawDetails.replace(/Address:\s*/i, '').trim();
+                        } else {
+                            parsedAddress = rawDetails;
+                        }
+                    }
+                    
+                    // 2. استخراج السعر الصحيح
+                    let rawPriceStr = String(row.price || row['Price'] || '0').replace(/,/g, '');
+                    let priceMatch = rawPriceStr.match(/(\d+(?:\.\d+)?)/);
+                    let parsedPrice = priceMatch ? parseFloat(priceMatch[1]) : 0;
+                    
+                    // 3. المسافات (POI و مركز المدينة)
+                    let distPOI = row['POI Distance22'] || row['poi distance22'] || row['Distance22'] || row['distance22'] || '';
+                    let distCity = row['Distance to city center'] || row['distance to city center'] || '';
+
+                    // 4. استخراج اسم الـ POI
+                    let detectedPOI = extractPOIName(row, distPOI);
+
+                    // 5. الإحداثيات
+                    let parsedLat = parseFloat(row.lat || row.latitude || row.Lat || row.Latitude);
+                    let parsedLng = parseFloat(row.lng || row.longitude || row.Lng || row.Longitude || row.lon || row.Lon);
+
+                    let coordStr = row.coordinations || row.coordination || row.Coordinates || row.coordinates || row.Coordinations || '';
+                    if ((isNaN(parsedLat) || isNaN(parsedLng)) && coordStr) {
+                        let nums = String(coordStr).match(/-?\d+\.\d+/g);
+                        if (nums && nums.length >= 2) {
+                            parsedLat = parseFloat(nums[0]);
+                            parsedLng = parseFloat(nums[1]);
+                        } else {
+                            let parts = String(coordStr).split(/[,|]/);
+                            if (parts.length >= 2) {
+                                let pLat = parseFloat(parts[0].trim());
+                                let pLng = parseFloat(parts[1].trim());
+                                if (!isNaN(pLat) && !isNaN(pLng)) {
+                                    parsedLat = pLat;
+                                    parsedLng = pLng;
+                                }
+                            }
+                        }
+                    }
+
+                    return {
+                        rowNum: row.row_number || row.rowNumber || null,
+                        timestamp: row.timestamp || row['Timestamp'] || row.date || '',
+                        source: row.website || row['website'] || row.source || 'Unknown Source',
+                        name: row.name || row['hotel name'] || row.hotel_name || 'Unknown Hotel',
+                        price: parsedPrice,
+                        stars: Math.min(parseInt(String(row.stars || row['stars rate'] || '3').match(/\d+/)?.[0] || 3), 5),
+                        poi: detectedPOI,
+                        address: parsedAddress,
+                        lat: !isNaN(parsedLat) ? parsedLat : null,
+                        lng: !isNaN(parsedLng) ? parsedLng : null,
+                        googleRating: parsedRating,
+                        googleReviewCount: (() => {
+                            const m = parsedRating.match(/based on ([\d,]+) reviews/i);
+                            return m ? m[1] : null;
+                        })(),
+                        distancePOI: distPOI,
+                        distanceCity: distCity,
+                        booking_url: row.booking_url || row['booking_url'] || (String(row.Distance || '').startsWith('http') ? row.Distance : '#'),
+                        image_url: row['img link'] || row['Img link'] || row.img_link || row.image_url || 'https://images.unsplash.com/photo-1566073771259-6a8506099945'
+                    };
+                });
+
+                if (extractedHotels.length === 0) throw new Error("No rows found");
+
+                // توحيد وإلغاء تكرار أسماء الـ POI بذكاء (حتى لو كان هناك 100 اسم لـ Grand Place أو باختلاف حالة الحروف)
+                const poiCanonicalMap = new Map();
+                extractedHotels.forEach(h => {
+                    if (h.poi) {
+                        const normKey = h.poi.trim().toLowerCase();
+                        if (!poiCanonicalMap.has(normKey)) {
+                            poiCanonicalMap.set(normKey, h.poi.trim());
+                        }
+                    }
+                });
+
+                extractedHotels.forEach(h => {
+                    if (h.poi) {
+                        const normKey = h.poi.trim().toLowerCase();
+                        h.poi = poiCanonicalMap.get(normKey);
+                    } else {
+                        h.poi = currentLang === 'ar' ? 'عام / غير محدد' : 'General / Unspecified';
+                    }
+                });
+
+                hotelsRaw = extractedHotels;
+
+                statusEl.className = "flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-green-500/10 text-green-400 border border-green-500/20";
+                currentStatusKey = 'statusSuccess';
+                
+            } catch (error) {
+                console.error(error);
+                statusEl.className = "flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-red-500/10 text-red-400 border border-red-500/20";
+                currentStatusKey = 'statusFail';
+                hotelsRaw = [...demoData];
+            }
+            
+            statusTxt.textContent = dict[currentLang][currentStatusKey];
+            updateStatisticsAndRender();
+        }
+
+        // بناء وتحديث قائمة الـ POI في القائمة المنسدلة بدون أي تكرار
+        function populatePoiFilter() {
+            const poiSelect = document.getElementById('filterPOI');
+            if (!poiSelect) return;
+            const currentSelectedPoi = poiSelect.value;
+
+            // حساب عدد الفنادق في كل POI
+            const poiCounts = {};
+            hotelsRaw.forEach(h => {
+                const p = h.poi || (currentLang === 'ar' ? 'عام / غير محدد' : 'General / Unspecified');
+                poiCounts[p] = (poiCounts[p] || 0) + 1;
+            });
+
+            const uniquePois = Object.keys(poiCounts).sort();
+            const badge = document.getElementById('poiCountBadge');
+            if (badge) {
+                badge.textContent = `${uniquePois.length} ${dict[currentLang].poiCountSuffix}`;
+            }
+
+            let optionsHtml = `<option value="all" style="background-color: #191b24; color: #ffffff;">${dict[currentLang].allPOIs}</option>`;
+            uniquePois.forEach(poi => {
+                optionsHtml += `<option value="${escapeHtml(poi)}" style="background-color: #191b24; color: #ffffff;">${escapeHtml(poi)} (${poiCounts[poi]} ${dict[currentLang].results})</option>`;
+            });
+
+            poiSelect.innerHTML = optionsHtml;
+
+            if (uniquePois.includes(currentSelectedPoi)) {
+                poiSelect.value = currentSelectedPoi;
+            } else {
+                poiSelect.value = 'all';
+            }
+        }
+
+        // دالة تشغيل حدث تغيير فلتر الـ POI (تؤثر على جميع الفلاتر الأخرى والخريطة والمقارنة)
+        function onPoiChange() {
+            const poiVal = document.getElementById('filterPOI').value;
+            const indicator = document.getElementById('activePoiIndicator');
+            
+            if (poiVal !== 'all') {
+                indicator.textContent = dict[currentLang].activeAreaPrefix + poiVal;
+                indicator.className = "text-xs px-2.5 py-1 rounded-lg bg-purple-900/40 text-purple-300 border border-purple-800 font-semibold";
+            } else {
+                indicator.textContent = dict[currentLang].allAreasStatus;
+                indicator.className = "text-xs px-2.5 py-1 rounded-lg bg-gray-800 text-gray-300 border border-gray-700";
+            }
+
+            // 1. تحديث خيارات المصادر المتاحة لهذا الـ POI فقط
+            updateSourceFilterForPoi(poiVal);
+
+            // 2. تحديث شريط السعر الأقصى ليتناسب مع أسعار هذا الـ POI
+            updatePriceSliderForPoi(poiVal);
+
+            // 3. تطبيق الفلترة وإعادة الرسم (مع تحديث الخريطة والمقارنة)
+            applyFiltersAndRender();
+        }
+
+        // تحديث فلتر المصادر بناءً على الـ POI المختار
+        function updateSourceFilterForPoi(poiVal) {
+            const sourceSelect = document.getElementById('filterSource');
+            const currentSource = sourceSelect.value;
+            
+            let subset = hotelsRaw;
+            if (poiVal !== 'all') {
+                subset = hotelsRaw.filter(h => h.poi === poiVal);
+            }
+            
+            const uniqueSources = [...new Set(subset.map(h => h.source))];
+            
+            let html = `<option value="all" style="background-color: #191b24; color: #ffffff;">${currentLang === 'ar' ? 'جميع المصادر' : 'All Sources'}</option>`;
+            uniqueSources.forEach(s => {
+                html += `<option value="${escapeHtml(s)}" style="background-color: #191b24; color: #ffffff;">${escapeHtml(s)}</option>`;
+            });
+            sourceSelect.innerHTML = html;
+            
+            if (uniqueSources.includes(currentSource)) {
+                sourceSelect.value = currentSource;
+            } else {
+                sourceSelect.value = 'all';
+            }
+        }
+
+        // تحديث نطاق السلايدر بناءً على الـ POI المختار
+        function updatePriceSliderForPoi(poiVal) {
+            let subset = hotelsRaw;
+            if (poiVal !== 'all') {
+                subset = hotelsRaw.filter(h => h.poi === poiVal);
+            }
+            if (subset.length === 0) return;
+            
+            const maxPriceInSubset = Math.ceil(Math.max(...subset.map(h => h.price)));
+            const minPriceInSubset = Math.floor(Math.min(...subset.map(h => h.price)));
+            
+            const slider = document.getElementById('filterPrice');
+            slider.max = Math.max(maxPriceInSubset, minPriceInSubset + 10);
+            slider.min = minPriceInSubset;
+            slider.value = slider.max; // نضبطه على أقصى سعر ليظهر الجميع افتراضياً
+            document.getElementById('priceVal').textContent = slider.max + (currentLang === 'en' ? ' USD' : ' $');
+        }
+
+        // إعادة تعيين جميع الفلاتر للوضع الافتراضي
+        function resetAllFilters() {
+            if (document.getElementById('filterPOI')) document.getElementById('filterPOI').value = 'all';
+            if (document.getElementById('filterSearch')) document.getElementById('filterSearch').value = '';
+            if (document.getElementById('filterStars')) document.getElementById('filterStars').value = 'all';
+            
+            updateSourceFilterForPoi('all');
+            updatePriceSliderForPoi('all');
+            
+            const indicator = document.getElementById('activePoiIndicator');
+            indicator.textContent = dict[currentLang].allAreasStatus;
+            indicator.className = "text-xs px-2.5 py-1 rounded-lg bg-gray-800 text-gray-300 border border-gray-700";
+
+            applyFiltersAndRender();
+        }
+
+        function applyFiltersAndRender() {
+            let processed = [...hotelsRaw];
+
+            // 1. استخراج قيم جميع الفلاتر (بما فيها POI)
+            const poiVal = document.getElementById('filterPOI') ? document.getElementById('filterPOI').value : 'all';
+            const searchVal = document.getElementById('filterSearch').value.toLowerCase().trim();
+            const starsVal = document.getElementById('filterStars').value;
+            const priceVal = parseFloat(document.getElementById('filterPrice').value);
+            const sourceVal = document.getElementById('filterSource').value;
+
+            // 2. تطبيق فلتر الـ POI كفلتر رئيسي أولاً
+            if (poiVal !== 'all') {
+                processed = processed.filter(hotel => hotel.poi === poiVal);
+            }
+
+            // 3. تحديث الإحصائيات في البطاقات العلوية لتعكس المجموعة المحددة بدقة
+            updateTopStats(processed);
+
+            // 4. تطبيق بقية الفلاتر التابعة
+            processed = processed.filter(hotel => {
+                const matchesSearch = hotel.name.toLowerCase().includes(searchVal) || hotel.address.toLowerCase().includes(searchVal);
+                const matchesStars = starsVal === 'all' || hotel.stars === parseInt(starsVal);
+                const matchesPrice = isNaN(priceVal) || hotel.price <= priceVal;
+                const matchesSource = sourceVal === 'all' || hotel.source === sourceVal;
+                
+                return matchesSearch && matchesStars && matchesPrice && matchesSource;
+            });
+
+            // الاحتفاظ بالنتائج المُفلترة للمقارنة والخريطة
+            window.allFilteredHotels = processed;
+
+            // 5. تطبيق الفرز والقص لأفضل 10 فنادق
+            let displayProcessed = [...processed];
+            if (filterFactor === 'cheapest') {
+                displayProcessed.sort((a, b) => a.price - b.price);
+                displayProcessed = displayProcessed.slice(0, 10);
+                document.getElementById('gridTitle').textContent = dict[currentLang].titleCheapest;
+            } else if (filterFactor === 'highest_rated') {
+                displayProcessed.sort((a, b) => {
+                    if (b.stars !== a.stars) return b.stars - a.stars;
+                    return a.price - b.price;
+                });
+                displayProcessed = displayProcessed.slice(0, 10);
+                document.getElementById('gridTitle').textContent = dict[currentLang].titleHighest;
+            } else {
+                document.getElementById('gridTitle').textContent = dict[currentLang].titleAll;
+            }
+
+            window.currentDisplayedHotels = displayProcessed;
+            renderGrid(displayProcessed);
+            
+            // التأثير على وضع الخريطة ووضع المقارنة مباشرة
+            if (isMapModeActive) {
+                renderMapSidebar();
+                initOrUpdateMap();
+            }
+            if (isCompareModeActive) {
+                renderComparisonView();
+            }
+        }
+
+        // تحديث الإحصائيات العلوية لتتوافق مع الـ POI والفلاتر
+        function updateTopStats(subset) {
+            if (!subset || subset.length === 0) {
+                document.getElementById('statTotalHotels').textContent = '0';
+                document.getElementById('statAvgPrice').textContent = '0.00';
+                document.getElementById('statCheapest').textContent = '0.00';
+                document.getElementById('statAvgStars').textContent = '0.0';
+                return;
+            }
+            const total = subset.length;
+            const avgPrice = subset.reduce((sum, h) => sum + h.price, 0) / total;
+            const minPrice = Math.min(...subset.map(h => h.price));
+            const avgStars = subset.reduce((sum, h) => sum + h.stars, 0) / total;
+
+            document.getElementById('statTotalHotels').textContent = total;
+            document.getElementById('statAvgPrice').textContent = avgPrice.toFixed(2);
+            document.getElementById('statCheapest').textContent = minPrice.toFixed(2);
+            document.getElementById('statAvgStars').textContent = avgStars.toFixed(1);
+        }
+
+        function updateStatisticsAndRender() {
+            if (hotelsRaw.length === 0) return;
+
+            // بناء قائمة المناطق الـ POI
+            populatePoiFilter();
+
+            // تحديث فلتر المصادر والأسعار
+            const poiVal = document.getElementById('filterPOI') ? document.getElementById('filterPOI').value : 'all';
+            updateSourceFilterForPoi(poiVal);
+            updatePriceSliderForPoi(poiVal);
+
+            applyFiltersAndRender();
+        }
+
+        function renderGrid(hotels) {
+            const grid = document.getElementById('hotelsGrid');
+            const empty = document.getElementById('emptyState');
+            const countEl = document.getElementById('resultsCount');
+
+            countEl.textContent = `${hotels.length} ${dict[currentLang].results}`;
+
+            if (hotels.length === 0) {
+                grid.classList.add('hidden');
+                empty.classList.remove('hidden');
+                return;
+            }
+
+            grid.classList.remove('hidden');
+            empty.classList.add('hidden');
+
+            grid.innerHTML = hotels.map((hotel, index) => {
+                let starsHtml = '';
+                for (let i = 1; i <= 5; i++) {
+                    starsHtml += i <= hotel.stars ? '<i class="fas fa-star text-yellow-500 text-xs"></i>' : '<i class="far fa-star text-gray-600 text-xs"></i>';
+                }
+
+                const imgUrl = hotel.image_url && hotel.image_url.startsWith('http') ? hotel.image_url : 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80';
+
+                return `
+                    <div class="glass-panel rounded-2xl overflow-hidden card-hover border border-gray-800 flex flex-col h-full relative">
+                        <!-- Checkbox for selection -->
+                        <div class="selection-checkbox-container absolute top-3 ${currentLang === 'en' ? 'left-3' : 'right-3'} z-10 ${isSelectionModeActive ? '' : 'hidden'}">
+                            <input type="checkbox" value="${hotel.rowNum}" onchange="toggleRowSelection('${hotel.rowNum}', this.checked)" class="hotel-checkbox w-6 h-6 accent-red-600 cursor-pointer shadow-2xl rounded-md border-2 border-white/50" ${selectedRows.includes(String(hotel.rowNum)) ? 'checked' : ''}>
+                        </div>
+                        <div class="relative h-48 bg-gray-900 overflow-hidden">
+                            <img src="${imgUrl}" alt="${escapeHtml(hotel.name)}" class="w-full h-full object-cover transform hover:scale-110 transition-all duration-500" onerror="this.src='https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80'">
+                            <div class="absolute top-3 ${currentLang === 'en' ? 'right-3' : 'left-3'} bg-black/75 backdrop-blur-md text-xs font-bold text-white px-3 py-1 rounded-full border border-white/10 shadow-lg">
+                                ${escapeHtml(hotel.source)}
+                            </div>
+                            <div class="absolute bottom-3 ${currentLang === 'en' ? 'left-3' : 'right-3'} bg-blue-600 text-white font-extrabold px-3 py-1.5 rounded-xl text-lg shadow-lg" dir="ltr">
+                                $${hotel.price.toFixed(2)}
+                                <span class="text-[10px] font-normal block leading-none text-blue-200 mt-1">${dict[currentLang].night}</span>
+                            </div>
+                        </div>
+
+                        <div class="p-5 flex-grow flex flex-col justify-between">
+                            <div>
+                                <div class="flex gap-1 mb-2">
+                                    ${starsHtml}
+                                    <span class="text-xs text-gray-400 mx-1.5 font-medium">(${hotel.stars} ${dict[currentLang].starsTxt})</span>
+                                </div>
+                                
+                                <h3 class="font-bold text-base text-white line-clamp-1 mb-1.5 hover:text-blue-400 transition-colors cursor-pointer" title="${escapeHtml(hotel.name)}">
+                                    ${escapeHtml(hotel.name)}
+                                </h3>
+
+                                <p class="text-[11px] text-gray-400 flex items-start gap-1.5 line-clamp-2 min-h-[2.5rem]" title="${escapeHtml(hotel.address)}">
+                                    <i class="fas fa-map-marker-alt text-red-400 mt-0.5 shrink-0"></i>
+                                    <span>${escapeHtml(hotel.address)}</span>
+                                </p>
+
+                                <!-- قسم الوسوم الإضافية مع شارة منطقة الـ POI -->
+                                <div class="flex flex-wrap gap-2 mt-3 min-h-[2rem]">
+                                    ${hotel.poi && hotel.poi !== 'عام / غير محدد' && hotel.poi !== 'General / Unspecified' ? `<span class="bg-purple-900/40 border border-purple-800/60 text-purple-200 px-2 py-1 rounded-lg text-[10px] font-semibold flex items-center gap-1.5" title="منطقة البحث المستهدفة"><i class="fas fa-location-crosshairs text-purple-400"></i> ${escapeHtml(hotel.poi)}</span>` : ''}
+                                    ${hotel.distancePOI && hotel.distancePOI !== 'N/A' ? `<span class="bg-indigo-900/40 border border-indigo-800/50 text-indigo-300 px-2 py-1 rounded-lg text-[10px] font-semibold flex items-center gap-1.5" title="البعد عن نقطة البحث"><i class="fas fa-route"></i> POI Dist: ${hotel.distancePOI.match(/[\d.]+\s*km/i)?.[0] || hotel.distancePOI.split(' to ')[0]}</span>` : ''}
+                                    ${hotel.distanceCity && hotel.distanceCity !== 'N/A' ? `<span class="bg-pink-900/40 border border-pink-800/50 text-pink-300 px-2 py-1 rounded-lg text-[10px] font-semibold flex items-center gap-1.5" title="البعد عن المدينة"><i class="fas fa-city"></i> City: ${hotel.distanceCity.match(/[\d.]+\s*km/i)?.[0] || hotel.distanceCity.split(' to ')[0]}</span>` : ''}
+                                    ${hotel.googleRating && hotel.googleRating !== 'N/A' && hotel.googleRating !== 'غير متوفر' ? `<span class="bg-green-900/40 border border-green-800/50 text-green-300 px-2 py-1 rounded-lg text-[10px] font-semibold flex items-center gap-1.5"><i class="fab fa-google"></i> ${hotel.googleRating.match(/[\d.]+\/\d/)?.[0] || hotel.googleRating.split('/')[0]}${hotel.googleReviewCount ? ' <span class="text-gray-400 font-normal">(' + hotel.googleReviewCount + ')</span>' : ''}</span>` : ''}
+                                </div>
+                            </div>
+
+                            <div class="mt-4 pt-4 border-t border-gray-800/60 w-full flex gap-2">
+                                <button onclick="showDetailsModal('${escapeHtml(hotel.name)}', '${escapeHtml(hotel.source)}', ${hotel.price}, ${hotel.stars}, '${escapeHtml(hotel.address)}', '${escapeHtml(hotel.poi)}', '${escapeHtml(hotel.distancePOI)}', '${escapeHtml(hotel.distanceCity)}', '${escapeHtml(hotel.googleRating)}', '${escapeHtml(hotel.timestamp)}', '${hotel.booking_url ? escapeHtml(hotel.booking_url) : '#'}')" class="w-1/2 bg-blue-600 hover:bg-blue-500 text-white py-2.5 rounded-xl text-sm font-bold text-center transition-all shadow-lg flex items-center justify-center gap-1.5">
+                                    <i class="fas fa-list-ul"></i>
+                                    ${dict[currentLang].details}
+                                </button>
+                                <button onclick="showOnMap(${index})" class="w-1/2 bg-gray-800 hover:bg-gray-700 text-gray-300 py-2.5 rounded-xl text-sm font-bold text-center transition-all border border-gray-700 flex items-center justify-center gap-1.5">
+                                    <i class="fas fa-map-marked-alt text-blue-400"></i>
+                                    <span>${dict[currentLang].mapBtn}</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/\\/g, "\\\\")
+                .replace(/'/g, "\\'")
+                .replace(/"/g, "&quot;")
+                .replace(/\n/g, "\\n")
+                .replace(/\r/g, "\\r")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
+        }
+
+        function updatePriceSlider(val) {
+            document.getElementById('priceVal').textContent = val + (currentLang === 'en' ? ' USD' : ' $');
+            applyFiltersAndRender();
+        }
+
+        function setFilterFactor(factor) {
+            filterFactor = factor;
+            ['cheapest', 'highest_rated', 'all'].forEach(f => {
+                const btn = document.getElementById(`tab_${f}`);
+                if (f === factor) {
+                    btn.className = "px-5 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2 iteru-blue-bg text-white shadow-lg";
+                } else {
+                    btn.className = "px-5 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2 bg-gray-800 text-gray-400 hover:text-white";
+                }
+            });
+            applyFiltersAndRender();
+        }
+
+        function openSettings() {
+            document.getElementById('settingsModal').classList.remove('hidden');
+        }
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.add('hidden');
+        }
+        function saveSettings() {
+            const urlInput = document.getElementById('n8nWebhookUrl').value.trim();
+            localStorage.setItem('n8n_webhook_url', urlInput);
+            closeSettings();
+            fetchData();
+        }
+
+        function showDetailsModal(name, source, price, stars, address, poi, distancePOI, distanceCity, googleRating, timestamp, bookingUrl) {
+            document.getElementById('modalHotelName').textContent = name || '';
+            document.getElementById('modalSource').textContent = source || '';
+            document.getElementById('modalPrice').textContent = "$" + (Number(price) || 0).toFixed(2);
+            document.getElementById('modalAddress').textContent = address || (currentLang === 'ar' ? 'غير متوفر' : 'N/A');
+            document.getElementById('modalPOI').textContent = poi || (currentLang === 'ar' ? 'غير محدد' : 'Unspecified');
+            document.getElementById('modalDistancePOI').textContent = distancePOI || (currentLang === 'ar' ? 'غير متوفر' : 'N/A');
+            document.getElementById('modalDistanceCity').textContent = distanceCity || (currentLang === 'ar' ? 'غير متوفر' : 'N/A');
+            document.getElementById('modalGoogleRating').textContent = googleRating || (currentLang === 'ar' ? 'غير متوفر' : 'N/A');
+            document.getElementById('modalTimestamp').textContent = timestamp || '-';
+
+            let starsHtml = '';
+            const numStars = Number(stars) || 0;
+            for (let i = 1; i <= 5; i++) {
+                starsHtml += i <= numStars ? '<i class="fas fa-star text-yellow-500"></i>' : '<i class="far fa-star text-gray-600"></i>';
+            }
+            document.getElementById('modalStars').innerHTML = starsHtml;
+
+            const bookBtn = document.getElementById('modalBookBtn');
+            if (bookBtn) {
+                if (bookingUrl && bookingUrl !== 'N/A' && bookingUrl !== '#') {
+                    bookBtn.href = bookingUrl;
+                    bookBtn.classList.remove('opacity-50', 'pointer-events-none');
+                } else {
+                    bookBtn.href = '#';
+                    bookBtn.classList.add('opacity-50', 'pointer-events-none');
+                }
+            }
+
+            const modal = document.getElementById('detailsModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+            }
+        }
+
+        function closeDetailsModal() {
+            const modal = document.getElementById('detailsModal');
+            if (modal) {
+                modal.classList.add('hidden');
+            }
+        }
+
+        // ==========================================
+        // PART 4: الأنظمة الذكية (المقارنة + الخريطة التفاعلية)
+        // ==========================================
+        let isCompareModeActive = false;
+
+        function toggleComparisonMode() {
+            isCompareModeActive = !isCompareModeActive;
+            
+            const normalView = document.getElementById('normalViewSection');
+            const compSection = document.getElementById('comparisonSection');
+            const mapSection = document.getElementById('mapSection');
+            const compareBtn = document.getElementById('tab_compare');
+            const mapBtn = document.getElementById('tab_map');
+
+            if (isCompareModeActive) {
+                isMapModeActive = false;
+                if(mapSection) mapSection.classList.add('hidden');
+                if(mapBtn) mapBtn.classList.replace('bg-blue-600', 'bg-blue-800');
+
+                if(normalView) normalView.classList.add('hidden');
+                if(compSection) compSection.classList.remove('hidden');
+                if(compareBtn) compareBtn.classList.replace('bg-purple-600', 'bg-purple-800');
+                
+                renderComparisonView();
+            } else {
+                if(normalView) normalView.classList.remove('hidden');
+                if(compSection) compSection.classList.add('hidden');
+                if(compareBtn) compareBtn.classList.replace('bg-purple-800', 'bg-purple-600');
+            }
+        }
+
+        // دالة جديدة لتنظيف النصوص وتحويلها إلى مصفوفة كلمات (Bag of Words)
+        function extractWords(name) {
+            if (!name) return [];
+            // 1. إزالة التشكيل والحروف اللاتينية المعجمة (مثل ô لتصبح o و é لتصبح e)
+            let cleaned = name.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            // 2. تحويل لحروف صغيرة
+            cleaned = cleaned.toLowerCase();
+            // 3. إزالة الرموز والاحتفاظ بالحروف والأرقام والمسافات فقط
+            cleaned = cleaned.replace(/[^a-z0-9\s]/g, ' ');
+            // 4. إزالة الكلمات العامة التي لا تفيد في المقارنة
+            cleaned = cleaned.replace(/\b(hotel|resort|spa|suites|the|inn|motel|فندق|منتجع|hostel|apartments)\b/g, ' ');
+            // 5. تحويل النص إلى مصفوفة من الكلمات المنفصلة وتجاهل الفراغات
+            return cleaned.split(/\s+/).filter(word => word.length > 0);
+        }
+
+        function isSameHotel(h1, h2) {
+            // --- 1. الشروط الصارمة جداً (Strict Gates) ---
+            
+            // أ. فندقان في منطقتين POI مختلفتين لا يمكن دمجهما
+            if (h1.poi && h2.poi && h1.poi !== h2.poi) return false;
+            
+            // ب. شرط النجوم الإجباري: يجب أن تتطابق النجوم تماماً
+            if (h1.stars !== h2.stars) return false;
+            
+            // ج. شرط المسافات الإجباري (لأنها مسحوبة من Google Places API):
+            // إذا كانت المسافة موجودة في الفندقين، يجب أن تتطابق تماماً بدون أي تسامح.
+            const dPoi1 = h1.distancePOI;
+            const dPoi2 = h2.distancePOI;
+            if (dPoi1 && dPoi2 && dPoi1 !== 'N/A' && dPoi2 !== 'N/A' && dPoi1 !== dPoi2) return false;
+
+            const dCity1 = h1.distanceCity;
+            const dCity2 = h2.distanceCity;
+            if (dCity1 && dCity2 && dCity1 !== 'N/A' && dCity2 !== 'N/A' && dCity1 !== dCity2) return false;
+
+            // --- 2. المقارنة الذكية للأسماء (Bag of Words Match) ---
+            
+            let words1 = extractWords(h1.name);
+            let words2 = extractWords(h2.name);
+            
+            if (words1.length === 0 || words2.length === 0) return false;
+
+            // حساب عدد الكلمات المشتركة بغض النظر عن ترتيبها (تحل مشكلة الترتيب العكسي للكلمات)
+            let matchCount = 0;
+            let usedIndexes = new Set(); // لمنع استخدام نفس الكلمة مرتين
+            
+            for (let w1 of words1) {
+                for (let i = 0; i < words2.length; i++) {
+                    if (!usedIndexes.has(i) && w1 === words2[i]) {
+                        matchCount++;
+                        usedIndexes.add(i);
+                        break;
+                    }
+                }
+            }
+            
+            // حساب نسبة التطابق بناءً على عدد كلمات الاسم الأقصر
+            // (مثلاً: "Dubois" و "Dubois Champs Elysees" سيتم اعتبار نسبة تطابقهما 100% لأن الكلمة الوحيدة في الاسم القصير موجودة في الاسم الطويل)
+            let minLength = Math.min(words1.length, words2.length);
+            let similarity = matchCount / minLength;
+
+            // إذا تطابقت الكلمات بنسبة 70% فأكثر، واجتازت كل الشروط الصارمة أعلاه، فهو نفس الفندق
+            if (similarity >= 0.7) {
+                return true;
+            }
+
+            return false;
+        }
+
+        let compareSortBy = 'price';
+        let showMatchingFirst = true;
+
+        function changeCompareSort(val) {
+            compareSortBy = val;
+            renderComparisonView();
+        }
+
+        function toggleShowMatchingFirst(val) {
+            showMatchingFirst = Boolean(val);
+            renderComparisonView();
+        }
+
+        function getGroupedHotels() {
+            const grouped = [];
+            // استخدام الفنادق المفلترة (المقيدة بفلتر الـ POI المختار)
+            const hotelsToCompare = window.allFilteredHotels !== undefined ? window.allFilteredHotels : hotelsRaw;
+            
+            hotelsToCompare.forEach(hotel => {
+                let foundGroup = null;
+                for (let group of grouped) {
+                    if (isSameHotel(group.primary, hotel)) {
+                        foundGroup = group;
+                        break;
+                    }
+                }
+                
+                if (foundGroup) {
+                    const existingOffer = foundGroup.offers.find(o => o.source === hotel.source);
+                    if (!existingOffer) {
+                        foundGroup.offers.push(hotel);
+                    } else if (hotel.price < existingOffer.price) {
+                        Object.assign(existingOffer, hotel);
+                    }
+                } else {
+                    grouped.push({
+                        id: 'group_' + Math.random().toString(36).substr(2, 9),
+                        primary: hotel,
+                        originalName: hotel.name,
+                        stars: hotel.stars,
+                        poi: hotel.poi,
+                        address: hotel.address,
+                        image: hotel.image_url,
+                        distancePOI: hotel.distancePOI,
+                        distanceCity: hotel.distanceCity,
+                        offers: [hotel]
+                    });
+                }
+            });
+
+            // فرز العروض داخل كل فندق تصاعدياً حسب السعر (الأرخص أولاً)
+            // وتعيين بيانات العرض الأرخص للفندق في وضع المقارنة
+            grouped.forEach(group => {
+                group.offers.sort((a, b) => a.price - b.price);
+                group.minPrice = group.offers[0].price;
+                
+                const cheapest = group.offers[0];
+                group.cheapest = cheapest;
+                
+                // تحديث primary ليمثل العرض الأرخص مع ملء البيانات التكميلية المفقودة من باقي العروض
+                group.primary = {
+                    ...cheapest,
+                    name: group.originalName || cheapest.name,
+                    stars: group.stars || cheapest.stars,
+                    address: (cheapest.address && cheapest.address !== 'no address' && cheapest.address !== 'Unknown Address' && cheapest.address !== 'N/A') ? cheapest.address : (group.address || 'N/A'),
+                    poi: cheapest.poi || group.poi,
+                    distancePOI: (cheapest.distancePOI && cheapest.distancePOI !== 'N/A') ? cheapest.distancePOI : (group.offers.find(o => o.distancePOI && o.distancePOI !== 'N/A')?.distancePOI || group.distancePOI || 'N/A'),
+                    distanceCity: (cheapest.distanceCity && cheapest.distanceCity !== 'N/A') ? cheapest.distanceCity : (group.offers.find(o => o.distanceCity && o.distanceCity !== 'N/A')?.distanceCity || group.distanceCity || 'N/A'),
+                    googleRating: (cheapest.googleRating && cheapest.googleRating !== 'غير متوفر' && cheapest.googleRating !== 'N/A') ? cheapest.googleRating : (group.offers.find(o => o.googleRating && o.googleRating !== 'غير متوفر' && o.googleRating !== 'N/A')?.googleRating || 'N/A'),
+                    googleReviewCount: cheapest.googleReviewCount || group.offers.find(o => o.googleReviewCount)?.googleReviewCount || null,
+                    timestamp: cheapest.timestamp || group.offers.find(o => o.timestamp)?.timestamp || '',
+                    booking_url: (cheapest.booking_url && cheapest.booking_url !== '#' && cheapest.booking_url !== 'N/A') ? cheapest.booking_url : (group.offers.find(o => o.booking_url && o.booking_url !== '#' && o.booking_url !== 'N/A')?.booking_url || '#')
+                };
+            });
+
+            // فرز المجموعات حسب خيار المستخدم + Show Matching First
+            grouped.sort((a, b) => {
+                if (showMatchingFirst) {
+                    const aIsMulti = a.offers.length > 1 ? 1 : 0;
+                    const bIsMulti = b.offers.length > 1 ? 1 : 0;
+                    if (aIsMulti !== bIsMulti) {
+                        return bIsMulti - aIsMulti; // الفنادق المتطابقة في أكثر من موقع تظهر أولاً
+                    }
+                }
+
+                if (compareSortBy === 'price') {
+                    return a.minPrice - b.minPrice;
+                } else if (compareSortBy === 'poi') {
+                    let d1 = parseFloat(String(a.primary.distancePOI || a.distancePOI).match(/[\d.]+/)?.[0] || 99999);
+                    let d2 = parseFloat(String(b.primary.distancePOI || b.distancePOI).match(/[\d.]+/)?.[0] || 99999);
+                    return d1 - d2;
+                } else if (compareSortBy === 'city') {
+                    let d1 = parseFloat(String(a.primary.distanceCity || a.distanceCity).match(/[\d.]+/)?.[0] || 99999);
+                    let d2 = parseFloat(String(b.primary.distanceCity || b.distanceCity).match(/[\d.]+/)?.[0] || 99999);
+                    return d1 - d2;
+                }
+                return 0;
+            });
+
+            return grouped;
+        }
+
+        function renderComparisonView() {
+            const compGrid = document.getElementById('comparisonGrid');
+            const toggleEl = document.getElementById('showMatchingFirstToggle');
+            if (toggleEl && toggleEl.checked !== showMatchingFirst) {
+                toggleEl.checked = showMatchingFirst;
+            }
+
+            const groupedHotels = getGroupedHotels();
+            const d = dict[currentLang];
+
+            if (groupedHotels.length === 0) {
+                compGrid.innerHTML = `<div class="text-center text-gray-400 py-10 w-full col-span-2">${currentLang === 'ar' ? 'لا توجد فنادق متطابقة للمقارنة في هذه المنطقة' : 'No matching hotels for comparison in this area'}</div>`;
+                return;
+            }
+
+            compGrid.innerHTML = groupedHotels.map(group => {
+                let starsHtml = '';
+                const displayStars = group.primary.stars || group.stars || 3;
+                for (let i = 1; i <= 5; i++) {
+                    starsHtml += i <= displayStars ? '<i class="fas fa-star text-yellow-500 text-xs"></i>' : '<i class="far fa-star text-gray-600 text-xs"></i>';
+                }
+
+                const imgUrl = (group.primary.image_url && group.primary.image_url.startsWith('http')) 
+                    ? group.primary.image_url 
+                    : (group.image && group.image.startsWith('http') ? group.image : 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80');
+                
+                const primary = group.primary;
+                const cheapestOffer = group.offers[0];
+
+                const offersHtml = group.offers.map((offer, index) => {
+                    const isCheapest = index === 0;
+                    const hasLink = offer.booking_url && offer.booking_url !== '#' && offer.booking_url !== 'N/A';
+                    return `
+                        <div class="flex justify-between items-center p-3 rounded-lg mt-2 border ${isCheapest && group.offers.length > 1 ? 'bg-green-900/30 border-green-500/50' : 'bg-gray-800/50 border-gray-700'}">
+                            <div class="flex flex-col gap-1">
+                                <div class="flex items-center gap-3">
+                                    <span class="font-bold text-sm ${isCheapest && group.offers.length > 1 ? 'text-green-400' : 'text-gray-300'}">${escapeHtml(offer.source)}</span>
+                                    ${isCheapest && group.offers.length > 1 ? `<span class="text-[9px] bg-green-600 text-white px-2 py-0.5 rounded-full">${d.cheapestSite}</span>` : ''}
+                                </div>
+                                <span class="text-[10px] text-gray-400">${escapeHtml(offer.name)}</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="font-extrabold ${isCheapest && group.offers.length > 1 ? 'text-green-400' : 'text-white'}">$${offer.price.toFixed(2)}</span>
+                                ${hasLink ? `
+                                    <a href="${escapeHtml(offer.booking_url)}" target="_blank" class="text-xs ${isCheapest ? 'bg-green-600 hover:bg-green-500' : 'bg-gray-700 hover:bg-gray-600'} text-white px-2.5 py-1 rounded-lg flex items-center gap-1 transition-all shadow" title="${currentLang === 'ar' ? 'حجز من ' + escapeHtml(offer.source) : 'Book from ' + escapeHtml(offer.source)}">
+                                        <i class="fas fa-external-link-alt text-[10px]"></i>
+                                    </a>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                const hasBookingUrl = primary.booking_url && primary.booking_url !== '#' && primary.booking_url !== 'N/A';
+
+                return `
+                    <div class="glass-panel p-5 rounded-2xl flex flex-col md:flex-row gap-5 border border-gray-700 relative">
+                        <!-- badge count -->
+                        ${group.offers.length > 1 ? `<div class="absolute -top-3 -right-3 bg-purple-600 text-white w-8 h-8 flex items-center justify-center rounded-full font-bold shadow-lg border-2 border-gray-900" title="${group.offers.length} ${currentLang === 'ar' ? 'مواقع متطابقة' : 'matching sites'}">${group.offers.length}</div>` : ''}
+                        
+                        <div class="w-full md:w-1/3 flex flex-col h-full">
+                            <div class="relative w-full h-32 rounded-xl overflow-hidden">
+                                <img src="${imgUrl}" alt="${escapeHtml(group.originalName)}" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80'">
+                                <div class="absolute bottom-2 ${currentLang === 'en' ? 'left-2' : 'right-2'} bg-green-600/90 backdrop-blur-sm text-white font-extrabold px-2.5 py-1 rounded-lg text-xs shadow-lg flex items-center gap-1.5" dir="ltr">
+                                    <span>$${cheapestOffer.price.toFixed(2)}</span>
+                                    <span class="text-[9px] font-normal text-green-200">(${escapeHtml(cheapestOffer.source)})</span>
+                                </div>
+                            </div>
+                            
+                            <h3 class="font-bold text-base text-white mt-3 line-clamp-1">${escapeHtml(group.originalName)}</h3>
+                            <div class="flex gap-1 mt-1 mb-2">${starsHtml}</div>
+                            <p class="text-[10px] text-gray-400 line-clamp-2 mb-2 flex-grow"><i class="fas fa-map-marker-alt text-red-400"></i> ${(primary.address && primary.address !== 'no address' && primary.address !== 'Unknown Address' && primary.address !== 'N/A') ? escapeHtml(primary.address) : (currentLang === 'ar' ? 'غير محدد' : 'Unknown')}</p>
+                            
+                            <div class="flex flex-col gap-1.5 mb-3">
+                                ${primary.poi && primary.poi !== 'عام / غير محدد' && primary.poi !== 'General / Unspecified' ? `<span class="text-[10px] text-purple-300 bg-purple-900/40 px-2 py-0.5 rounded border border-purple-800/50 flex items-center gap-1.5"><i class="fas fa-location-crosshairs text-purple-400"></i> POI: <strong>${escapeHtml(primary.poi)}</strong></span>` : ''}
+                                ${primary.distancePOI && primary.distancePOI !== 'N/A' ? `<span class="text-[10px] text-indigo-300 bg-indigo-900/40 px-2 py-0.5 rounded border border-indigo-800/50 flex items-center gap-1.5"><i class="fas fa-route text-indigo-400"></i> POI Dist: <strong>${primary.distancePOI.match(/[\d.]+\s*km/i)?.[0] || primary.distancePOI.split(' to ')[0]}</strong></span>` : ''}
+                                ${primary.distanceCity && primary.distanceCity !== 'N/A' ? `<span class="text-[10px] text-pink-300 bg-pink-900/40 px-2 py-0.5 rounded border border-pink-800/50 flex items-center gap-1.5"><i class="fas fa-city text-pink-400"></i> City: <strong>${primary.distanceCity.match(/[\d.]+\s*km/i)?.[0] || primary.distanceCity.split(' to ')[0]}</strong></span>` : ''}
+                                ${primary.googleRating && primary.googleRating !== 'غير متوفر' && primary.googleRating !== 'N/A' ? `<span class="text-[10px] text-green-300 bg-green-900/40 px-2 py-0.5 rounded border border-green-800/50 flex items-center gap-1.5"><i class="fab fa-google text-green-400"></i> <strong>${primary.googleRating.match(/[\d.]+\/\d/)?.[0] || primary.googleRating.split('/')[0]}</strong>${primary.googleReviewCount ? ` <span class="text-gray-400">(${primary.googleReviewCount})</span>` : ''}</span>` : ''}
+                            </div>
+                            
+                            <div class="w-full flex gap-2 mt-auto">
+                                <button onclick="showDetailsModal('${escapeHtml(group.originalName || primary.name)}', '${escapeHtml(primary.source)}', ${primary.price}, ${primary.stars}, '${escapeHtml(primary.address)}', '${escapeHtml(primary.poi)}', '${escapeHtml(primary.distancePOI)}', '${escapeHtml(primary.distanceCity)}', '${escapeHtml(primary.googleRating)}', '${escapeHtml(primary.timestamp)}', '${hasBookingUrl ? escapeHtml(primary.booking_url) : '#'}')" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-2 rounded-xl text-xs font-bold text-center transition-all shadow-lg flex items-center justify-center gap-1.5">
+                                    <i class="fas fa-list-ul"></i>
+                                    <span>${dict[currentLang].details}</span>
+                                </button>
+                                <a href="${hasBookingUrl ? escapeHtml(primary.booking_url) : '#'}" target="_blank" class="flex-1 bg-green-600 hover:bg-green-500 text-white py-2 rounded-xl text-xs font-bold text-center transition-all shadow-lg flex items-center justify-center gap-1.5 ${!hasBookingUrl ? 'opacity-50 pointer-events-none' : ''}">
+                                    <i class="fas fa-calendar-check"></i>
+                                    <span>${dict[currentLang].bookNow || (currentLang === 'ar' ? 'احجز الآن' : 'Book Now')}</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="w-full md:w-2/3 flex flex-col justify-center border-l border-gray-800 pl-5">
+                            <h4 class="text-xs font-bold text-gray-400 border-b border-gray-700 pb-2 mb-2 flex justify-between items-center">
+                                <span>${currentLang === 'ar' ? 'مقارنة الأسعار المتوفرة:' : 'Available Prices:'}</span>
+                                <span class="text-[10px] bg-gray-800 px-2 py-0.5 rounded text-gray-500">${group.offers.length} ${currentLang === 'ar' ? 'عروض' : 'offers'}</span>
+                            </h4>
+                            <div class="flex flex-col gap-1 max-h-56 overflow-y-auto custom-scrollbar pr-2">
+                                ${offersHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ------------------------------------------
+        // نظام الخريطة التفاعلية (Interactive Map)
+        // ------------------------------------------
+        let isMapModeActive = false;
+        let googleMapInstance = null;
+        let mapMarkers = [];
+        let infoWindow = null;
+
+        function changeMapSort(val) {
+            mapSortValue = val;
+            renderMapSidebar();
+            initOrUpdateMap();
+        }
+
+        function toggleMapMode() {
+            isMapModeActive = !isMapModeActive;
+            
+            const normalView = document.getElementById('normalViewSection');
+            const compSection = document.getElementById('comparisonSection');
+            const mapSection = document.getElementById('mapSection');
+            const mapBtn = document.getElementById('tab_map');
+            const compareBtn = document.getElementById('tab_compare');
+
+            if (isMapModeActive) {
+                isCompareModeActive = false;
+                if(compSection) compSection.classList.add('hidden');
+                if(compareBtn) compareBtn.classList.replace('bg-purple-800', 'bg-purple-600');
+
+                if(normalView) normalView.classList.add('hidden');
+                if(mapSection) mapSection.classList.remove('hidden');
+                if(mapBtn) mapBtn.classList.replace('bg-blue-800', 'bg-blue-600');
+                
+                renderMapSidebar();
+                initOrUpdateMap();
+            } else {
+                if(normalView) normalView.classList.remove('hidden');
+                if(mapSection) mapSection.classList.add('hidden');
+                if(mapBtn) mapBtn.classList.replace('bg-blue-600', 'bg-blue-800');
+            }
+        }
+
+        function getSortedMapHotels() {
+            let grouped = getGroupedHotels();
+            const sortVal = mapSortValue; 
+            
+            const extractDist = (val) => {
+                if (!val || val === 'N/A' || val === 'غير متوفر') return 9999;
+                const match = String(val).match(/[\d.]+/);
+                return match ? parseFloat(match[0]) : 9999;
+            };
+
+            if (sortVal === 'cheapest') {
+                grouped.sort((a, b) => a.minPrice - b.minPrice);
+            } else if (sortVal === 'poi') {
+                grouped.sort((a, b) => extractDist(a.primary.distancePOI) - extractDist(b.primary.distancePOI));
+            } else if (sortVal === 'city') {
+                grouped.sort((a, b) => extractDist(a.primary.distanceCity) - extractDist(b.primary.distanceCity));
+            }
+            return grouped;
+        }
+
+        function renderMapSidebar() {
+            const sidebar = document.getElementById('mapSidebar');
+            if (!sidebar) return;
+            const currentHotels = getSortedMapHotels(); 
+
+            sidebar.innerHTML = currentHotels.map((group, index) => {
+                const hotel = group.primary;
+                const imgUrl = hotel.image_url && hotel.image_url.startsWith('http') ? hotel.image_url : 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80';
+                return `
+                    <div onclick="focusOnMapMarker(${index})" class="glass-panel p-3 rounded-xl flex flex-col gap-2 cursor-pointer hover:border-blue-500 transition-all border border-gray-700 bg-gray-800/80">
+                        <div class="flex gap-3">
+                            <img src="${imgUrl}" class="w-20 h-20 object-cover rounded-lg" onerror="this.src='https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80'">
+                            <div class="flex-grow flex flex-col justify-center">
+                                <h4 class="text-sm font-bold text-white line-clamp-1">${escapeHtml(hotel.name)}</h4>
+                                <span class="text-[10px] text-gray-400 mb-1"><i class="fas fa-star text-yellow-500"></i> ${hotel.stars} Stars</span>
+                                <div class="flex justify-between items-center mt-1">
+                                    <span class="text-lg font-extrabold text-blue-400">$${group.minPrice.toFixed(2)}</span>
+                                    <span class="text-[9px] bg-gray-700 px-2 py-0.5 rounded text-gray-300">${group.offers.length} offers</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-1 mt-1">
+                            ${hotel.poi && hotel.poi !== 'عام / غير محدد' ? `<span class="bg-purple-900/40 text-purple-200 px-1.5 py-0.5 rounded text-[9px] border border-purple-800/60 font-semibold"><i class="fas fa-location-crosshairs"></i> ${escapeHtml(hotel.poi)}</span>` : ''}
+                            ${hotel.distancePOI && hotel.distancePOI !== 'N/A' ? `<span class="bg-indigo-900/40 text-indigo-300 px-1.5 py-0.5 rounded text-[9px] border border-indigo-800/50"><i class="fas fa-route"></i> POI Dist: ${hotel.distancePOI.match(/[\d.]+\s*km/i)?.[0] || hotel.distancePOI.split(' to ')[0]}</span>` : ''}
+                            ${hotel.distanceCity && hotel.distanceCity !== 'N/A' ? `<span class="bg-pink-900/40 text-pink-300 px-1.5 py-0.5 rounded text-[9px] border border-pink-800/50"><i class="fas fa-city"></i> City: ${hotel.distanceCity.match(/[\d.]+\s*km/i)?.[0] || hotel.distanceCity.split(' to ')[0]}</span>` : ''}
+                            ${hotel.googleRating && hotel.googleRating !== 'غير متوفر' && hotel.googleRating !== 'N/A' ? `<span class="bg-green-900/40 text-green-300 px-1.5 py-0.5 rounded text-[9px] border border-green-800/50"><i class="fab fa-google"></i> ${hotel.googleRating.match(/[\d.]+\/\d/)?.[0] || hotel.googleRating.split('/')[0]}${hotel.googleReviewCount ? ' (' + hotel.googleReviewCount + ')' : ''}</span>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function initOrUpdateMap() {
+            const mapElement = document.getElementById("googleMap");
+            if (!mapElement) return;
+            
+            if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
+                mapElement.innerHTML = `<div class="text-center p-10 text-red-400 h-full flex items-center justify-center font-bold">
+                    <i class="fas fa-exclamation-triangle mr-2"></i> 
+                    ${currentLang === 'ar' ? 'جاري تحميل الخريطة، يرجى التأكد من تفعيل مفتاح الـ API.' : 'Loading map, please check your API key.'}
+                </div>`;
+                return;
+            }
+
+            const mapOptions = {
+                zoom: 12,
+                center: { lat: 48.8566, lng: 2.3522 },
+                styles: [
+                    { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
+                    { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
+                    { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
+                    { featureType: "water", elementType: "geometry", stylers: [{ color: "#17263c" }] }
+                ],
+                disableDefaultUI: false
+            };
+
+            if (!googleMapInstance) {
+                googleMapInstance = new google.maps.Map(mapElement, mapOptions);
+                infoWindow = new google.maps.InfoWindow();
+            }
+
+            mapMarkers.forEach(marker => marker.setMap(null));
+            mapMarkers = [];
+
+            const bounds = new google.maps.LatLngBounds();
+            const currentHotels = getSortedMapHotels();
+            
+            let validMarkersCount = 0; 
+            let lastValidPosition = null;
+
+            currentHotels.forEach((group, index) => {
+                const hotel = group.primary;
+                const addMarker = (position) => {
+                    if(position.lat === 0 && position.lng === 0) return;
+
+                    const marker = new google.maps.Marker({
+                        position: position,
+                        map: googleMapInstance,
+                        title: hotel.name,
+                        label: {
+                            text: `$${Math.round(group.minPrice)}`,
+                            color: "white",
+                            className: "font-bold text-[10px] px-1.5 py-0.5 rounded-md shadow-sm border border-white",
+                        },
+                        icon: { path: google.maps.SymbolPath.CIRCLE, scale: 12, fillColor: '#2563eb', fillOpacity: 0.9, strokeWeight: 1.5, strokeColor: '#fff' }
+                    });
+
+                    marker.addListener("click", () => {
+                        const ratingLine = hotel.googleRating && hotel.googleRating !== 'غير متوفر' && hotel.googleRating !== 'N/A'
+                            ? `<div class="text-[10px] text-green-600 mt-1"><i class="fab fa-google"></i> ${hotel.googleRating.match(/[\d.]+\/\d/)?.[0] || hotel.googleRating.split('/')[0]}${hotel.googleReviewCount ? ' (' + hotel.googleReviewCount + ')' : ''}</div>` : '';
+                        const poiTagLine = hotel.poi && hotel.poi !== 'عام / غير محدد'
+                            ? `<div class="text-[10px] text-purple-600 font-bold mt-1"><i class="fas fa-location-crosshairs"></i> POI: ${escapeHtml(hotel.poi)}</div>` : '';
+                        const poiLine = hotel.distancePOI && hotel.distancePOI !== 'N/A'
+                            ? `<div class="text-[10px] text-indigo-600 mt-0.5"><i class="fas fa-route"></i> Dist: ${hotel.distancePOI.match(/[\d.]+\s*km/i)?.[0] || hotel.distancePOI.split(' to ')[0]}</div>` : '';
+                        const cityLine = hotel.distanceCity && hotel.distanceCity !== 'N/A'
+                            ? `<div class="text-[10px] text-pink-600 mt-0.5"><i class="fas fa-city"></i> City: ${hotel.distanceCity.match(/[\d.]+\s*km/i)?.[0] || hotel.distanceCity.split(' to ')[0]}</div>` : '';
+                        
+                        const imgHtml = hotel.image_url ? `<img src="${hotel.image_url}" class="w-full h-24 object-cover rounded-md mb-2" onerror="this.style.display='none'">` : '';
+                        
+                        let mapsUrl = hotel.booking_url;
+                        if (!mapsUrl.includes('google.com/maps')) {
+                            mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(hotel.name + ' ' + hotel.address)}`;
+                        }
+                        const mapsLinkHtml = `<a href="${mapsUrl}" target="_blank" class="mt-2 text-xs bg-blue-50 text-blue-600 border border-blue-200 block text-center py-1.5 rounded font-bold hover:bg-blue-100"><i class="fas fa-external-link-alt"></i> ${currentLang === 'ar' ? 'عرض في خرائط جوجل' : 'View on Google Maps'}</a>`;
+
+                        const contentHtml = `
+                            <div class="p-2 w-52 text-gray-900 font-sans" dir="${currentLang === 'ar' ? 'rtl' : 'ltr'}">
+                                ${imgHtml}
+                                <h3 class="font-bold text-sm mb-1 leading-snug">${escapeHtml(hotel.name)}</h3>
+                                <div class="flex justify-between items-center mb-1">
+                                    <p class="text-blue-700 font-extrabold text-lg">$${group.minPrice.toFixed(2)}</p>
+                                    <span class="text-[9px] bg-gray-200 px-1.5 py-0.5 rounded font-bold">${group.offers.length} ${currentLang === 'ar' ? 'عروض' : 'offers'}</span>
+                                </div>
+                                ${poiTagLine}${ratingLine}${poiLine}${cityLine}
+                                ${mapsLinkHtml}
+                            </div>
+                        `;
+                        infoWindow.setContent(contentHtml);
+                        infoWindow.open(googleMapInstance, marker);
+                        
+                        const sidebar = document.getElementById('mapSidebar');
+                        if (sidebar) {
+                            const sidebarItems = sidebar.children;
+                            if(sidebarItems[index]) {
+                                sidebarItems[index].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                Array.from(sidebarItems).forEach(el => {
+                                    el.classList.remove('border-blue-500', 'bg-blue-900/30');
+                                    el.classList.add('border-gray-700', 'bg-gray-800/80');
+                                });
+                                sidebarItems[index].classList.remove('border-gray-700', 'bg-gray-800/80');
+                                sidebarItems[index].classList.add('border-blue-500', 'bg-blue-900/30');
+                            }
+                        }
+                    });
+
+                    mapMarkers[index] = marker;
+                    bounds.extend(position);
+                    
+                    validMarkersCount++;
+                    lastValidPosition = position;
+                };
+
+                if (hotel.lat && hotel.lng) {
+                    addMarker({ lat: hotel.lat, lng: hotel.lng });
+                    return;
+                }
+
+                let coordsMatch = null;
+                if (hotel.booking_url && hotel.booking_url !== '#') {
+                    coordsMatch = hotel.booking_url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/) ||
+                                  hotel.booking_url.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/) ||
+                                  hotel.booking_url.match(/ll=(-?\d+\.\d+),(-?\d+\.\d+)/) ||
+                                  hotel.booking_url.match(/query=(-?\d+\.\d+),(-?\d+\.\d+)/);
+                }
+
+                if (coordsMatch) {
+                    let latVal = parseFloat(coordsMatch[1]);
+                    let lngVal = parseFloat(coordsMatch[2]);
+                    if (!isNaN(latVal) && !isNaN(lngVal)) {
+                        addMarker({ lat: latVal, lng: lngVal });
+                        return;
+                    }
+                }
+            });
+
+            // التحكم الذكي بحدود الخريطة والتركيز على الـ POI المختار
+            if (validMarkersCount === 0) {
+                googleMapInstance.setCenter(mapOptions.center);
+                googleMapInstance.setZoom(12);
+            } else if (validMarkersCount === 1) {
+                googleMapInstance.setCenter(lastValidPosition);
+                googleMapInstance.setZoom(15);
+            } else {
+                googleMapInstance.fitBounds(bounds, 50);
+                const listener = google.maps.event.addListener(googleMapInstance, "idle", () => { 
+                    if (googleMapInstance.getZoom() > 16) {
+                        googleMapInstance.setZoom(16); 
+                    }
+                    google.maps.event.removeListener(listener); 
+                });
+            }
+        }
+
+        function focusOnMapMarker(index) {
+            if (mapMarkers[index] && googleMapInstance) {
+                googleMapInstance.setZoom(15);
+                googleMapInstance.panTo(mapMarkers[index].getPosition());
+                google.maps.event.trigger(mapMarkers[index], 'click');
+            }
+        }
+
+        function showOnMap(index) {
+            if (!isMapModeActive) {
+                toggleMapMode();
+            }
+            document.getElementById('mapSection').scrollIntoView({ behavior: 'smooth' });
+            setTimeout(() => {
+                focusOnMapMarker(index);
+            }, 500);
+        }
+    </script>
+
+    <!-- Google Maps API Library Call -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBIfOvt6ktgVpNq1G4ZIEIxhbdYfx26ts&libraries=places&callback=initOrUpdateMap" async defer></script>
+
+</body>
+</html>
