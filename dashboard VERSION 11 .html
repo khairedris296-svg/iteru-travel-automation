@@ -859,7 +859,7 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             const savedUrl = localStorage.getItem('n8n_webhook_url');
-            const defaultWebhookUrl = "https://dddbot.duckdns.org/webhook-test/210168f8-1329-4df1-8f6d-2fb15f1be838";
+            const defaultWebhookUrl = "https://dddbot.duckdns.org/webhook/210168f8-1329-4df1-8f6d-2fb15f1be838";
             
             document.getElementById('n8nWebhookUrl').value = savedUrl || defaultWebhookUrl;
             fetchData();
